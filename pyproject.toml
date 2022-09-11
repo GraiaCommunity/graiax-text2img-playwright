@@ -19,7 +19,7 @@ readme = "README.md"
 license = {text = "MIT"}
 
 [project.urls]
-repository = "https://github.com/GraiaCommunity/graiax-playwright"
+repository = "https://github.com/GraiaCommunity/graiax-text2img-playwright"
 
 [project.optional-dependencies]
 
