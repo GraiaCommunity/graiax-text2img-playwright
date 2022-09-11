@@ -2,7 +2,6 @@ import re
 
 from markdown_it import MarkdownIt
 from markdown_it.common.utils import escapeHtml, unescapeAll
-from markdown_it.rules_block.state_block import StateBlock
 from markdown_it.token import Token
 
 from ._resolve_highlight_lines import is_highlight_line, resolve_highlight_lines
