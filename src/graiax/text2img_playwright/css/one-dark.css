@@ -1,0 +1,334 @@
+.hll {
+    background-color: #ffffcc;
+}
+.o,
+.ow,
+.fm {
+    color: #56b6c2;
+}
+.fm {
+    font-weight: bold;
+}
+.c,
+.ch,
+.cm,
+.cp,
+.cpf,
+.c1,
+.cs {
+    color: #7f848e;
+}
+.kc,
+.bp,
+.kt,
+.nb,
+.nc {
+    color: #e5c07b;
+}
+.k,
+.kd,
+.kn,
+.kp,
+.kr {
+    color: #c678dd;
+}
+.nd,
+.nf {
+    color: #61afef;
+}
+.nf {
+    font-weight: bold;
+}
+.n,
+.na,
+.no,
+.ni,
+.ne,
+.nl,
+.nn,
+.nx,
+.py,
+.nt,
+.nv {
+    color: #e06c75;
+}
+.m,
+.mb,
+.mf,
+.mh,
+.mi,
+.mo,
+.il {
+    color: #d19a66;
+}
+.s,
+.sa,
+.sb,
+.sc,
+.dl,
+.sd,
+.s2,
+.se,
+.sh,
+.si,
+.sx,
+.sr,
+.s1,
+.ss {
+    color: #98c379;
+}
+.vc,
+.vg,
+.vi,
+.vm {
+    color: #e06c75;
+}
+.err,
+.esc,
+.g,
+.l,
+.x,
+.p,
+.gd,
+.ge,
+.gr,
+.gh,
+.gi,
+.go,
+.gp,
+.gs,
+.gu,
+.gt,
+.ld,
+.pm,
+.w {
+    color: #abb2bf;
+}
+:root {
+    --code-bg-color: #282c34;
+    --code-ln-color: #9e9e9e;
+    --code-hl-bg-color: rgba(0, 0, 0, 0.66);
+    --code-ln-wrapper-width: 3.5rem;
+    --font-family-code: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+code[class*='language-'],
+pre[class*='language-'] {
+    color: #ccc;
+    background: none;
+    font-family: var(--font-family-code);
+    font-size: 0.9em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.3rem !important;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+pre,
+pre[class*='language-'] {
+    padding: 1.25rem 1.5rem !important;
+    margin: 0.85rem 0;
+    border-radius: 6px;
+    overflow: auto;
+}
+pre code,
+pre[class*='language-'] code {
+    color: #fff;
+    padding: 0;
+    font-family: var(--font-family-code);
+    background-color: transparent;
+    border-radius: 0;
+    overflow-wrap: unset;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
+    background: #2d2d2d;
+}
+:not(pre) > code[class*='language-'] {
+    padding: 0.1em;
+    border-radius: 0.3em;
+    white-space: normal;
+}
+div[class*='language-'] {
+    position: relative;
+    background-color: var(--code-bg-color);
+    border-radius: 6px;
+}
+div[class*='language-']::before {
+    position: absolute;
+    z-index: 3;
+    top: 0.8em;
+    right: 1em;
+    font-size: 0.75rem;
+    color: var(--code-ln-color);
+}
+div[class*='language-'] pre,
+div[class*='language-'] pre[class*='language-'] {
+    background: transparent !important;
+    position: relative;
+    z-index: 1;
+}
+div[class*='language-'] .highlight-lines {
+    user-select: none;
+    padding-top: 1.3rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    line-height: 1.5;
+}
+div[class*='language-'] .highlight-lines .highlight-line {
+    background-color: var(--code-hl-bg-color);
+}
+div[class*='language-']:not(.line-numbers-mode) .line-numbers {
+    display: none;
+}
+div[class*='language-'].line-numbers-mode .highlight-lines .highlight-line {
+    position: relative;
+}
+div[class*='language-'].line-numbers-mode .highlight-lines .highlight-line::before {
+    content: ' ';
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    display: block;
+    width: var(--code-ln-wrapper-width);
+    height: 100%;
+}
+div[class*='language-'].line-numbers-mode pre {
+    margin-left: var(--code-ln-wrapper-width);
+    padding-left: 1rem;
+    vertical-align: middle;
+}
+div[class*='language-'].line-numbers-mode .line-numbers {
+    font-family: var(--font-family-code);
+    position: absolute;
+    top: 0;
+    width: var(--code-ln-wrapper-width);
+    text-align: center;
+    color: var(--code-ln-color);
+    padding-top: 1.25rem;
+    line-height: 1.3rem;
+    counter-reset: line-number;
+}
+div[class*='language-'].line-numbers-mode .line-numbers .line-number {
+    position: relative;
+    z-index: 3;
+    user-select: none;
+    height: 1.3rem;
+}
+div[class*='language-'].line-numbers-mode .line-numbers .line-number::before {
+    counter-increment: line-number;
+    content: counter(line-number);
+    font-size: 0.9em;
+}
+div[class*='language-'].line-numbers-mode::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--code-ln-wrapper-width);
+    height: 100%;
+    border-radius: 6px 0 0 6px;
+    border-right: 1px solid var(--code-hl-bg-color);
+}
+div[class*='language-'].ext-sh:before {
+    content: 'sh';
+}
+div[class*='language-'].ext-bat:before {
+    content: 'bat';
+}
+div[class*='language-'].ext-c:before {
+    content: 'c';
+}
+div[class*='language-'].ext-cs:before {
+    content: 'cs';
+}
+div[class*='language-'].ext-cpp:before {
+    content: 'cpp';
+}
+div[class*='language-'].ext-css:before {
+    content: 'css';
+}
+div[class*='language-'].ext-diff:before {
+    content: 'diff';
+}
+div[class*='language-'].ext-docker:before {
+    content: 'docker';
+}
+div[class*='language-'].ext-fish:before {
+    content: 'fish';
+}
+div[class*='language-'].ext-go:before {
+    content: 'go';
+}
+div[class*='language-'].ext-html:before {
+    content: 'html';
+}
+div[class*='language-'].ext-java:before {
+    content: 'java';
+}
+div[class*='language-'].ext-js:before {
+    content: 'js';
+}
+div[class*='language-'].ext-json:before {
+    content: 'json';
+}
+div[class*='language-'].ext-kt:before {
+    content: 'kt';
+}
+div[class*='language-'].ext-lua:before {
+    content: 'lua';
+}
+div[class*='language-'].ext-Makefile:before {
+    content: 'Makefile';
+}
+div[class*='language-'].ext-md:before {
+    content: 'md';
+}
+div[class*='language-'].ext-php:before {
+    content: 'php';
+}
+div[class*='language-'].ext-pwsh:before {
+    content: 'pwsh';
+}
+div[class*='language-'].ext-py:before {
+    content: 'py';
+}
+div[class*='language-'].ext-py:before {
+    content: 'py';
+}
+div[class*='language-'].ext-ruby:before {
+    content: 'ruby';
+}
+div[class*='language-'].ext-rust:before {
+    content: 'rust';
+}
+div[class*='language-'].ext-sass:before {
+    content: 'sass';
+}
+div[class*='language-'].ext-scss:before {
+    content: 'scss';
+}
+div[class*='language-'].ext-toml:before {
+    content: 'toml';
+}
+div[class*='language-'].ext-ts:before {
+    content: 'ts';
+}
+div[class*='language-'].ext-xml:before {
+    content: 'xml';
+}
+div[class*='language-'].ext-yaml:before {
+    content: 'yaml';
+}
