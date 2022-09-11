@@ -51,6 +51,6 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 
 @listen(FriendMessage)
 async def function(app: Ariadne, friend: Friend):
-    image_bytes = md2img(md, highlight=True)
-    app.sendMessage(friend, MessageChain(Image(data_bytes=image_bytes)))
+    image_bytes = await md2img(md, highlight=True)
+    await app.sendMessage(friend, MessageChain(Image(data_bytes=image_bytes)))
 ```
