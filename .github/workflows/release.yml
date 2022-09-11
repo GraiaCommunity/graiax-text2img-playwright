@@ -18,5 +18,5 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.REDLNN_PYPI_TOKEN }}
+          password: ${{ secrets.PYPI_TOKEN }}
           skip_existing: true

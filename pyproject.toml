@@ -1,6 +1,6 @@
 [project]
 name = "graiax-text2img-playwright"
-version = "0.1.0b1"
+version = "0.1.0b2"
 description = "基于 Playwright 的适用于 Graia 的文转图工具"
 authors = [
     {name = "Redlnn", email = "w731347477@gmail.com"},
