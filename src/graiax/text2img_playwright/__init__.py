@@ -17,7 +17,7 @@ mdit-py-plugins 的 自带可用插件列表：
 
 
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from graiax.playwright import PlaywrightBrowser
 from graiax.playwright.pager import Parameters as ContextParm
@@ -57,8 +57,8 @@ def _update_screenshot_args(screenshot_args: ScreenshotParm) -> ScreenshotParm:
 
 
 async def template2img(
-    text: str,
     template: str,
+    template_args: Dict[str, str],
     *,
     context_args: Optional[ContextParm] = None,
     screenshot_args: Optional[ScreenshotParm] = None,
@@ -66,7 +66,7 @@ async def template2img(
     launart = Launart.current()
     browser = launart.get_interface(PlaywrightBrowser)
 
-    text = Template(template).render(text)
+    text = Template(template).render(**template_args)
 
     if context_args is None:
         context_args = {}
