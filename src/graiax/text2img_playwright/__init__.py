@@ -32,7 +32,7 @@ from mdit_py_plugins.tasklists import tasklists_plugin
 
 from .plugins.code import code_plugin
 from .plugins.code.highlight import highlight_code
-from .types import ScreenshotParm
+from .types import ScreenshotParms
 
 md = (
     MarkdownIt("gfm-like", {'highlight': highlight_code})
@@ -61,7 +61,7 @@ async def template2img(
     template_args: Dict[str, str],
     *,
     context_args: Optional[ContextParm] = None,
-    screenshot_args: Optional[ScreenshotParm] = None,
+    screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     launart = Launart.current()
     browser = launart.get_interface(PlaywrightBrowser)
@@ -91,7 +91,7 @@ async def text2img(
     css: str = '',
     *,
     context_args: Optional[ContextParm] = None,
-    screenshot_args: Optional[ScreenshotParm] = None,
+    screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     launart = Launart.current()
     browser = launart.get_interface(PlaywrightBrowser)
@@ -121,7 +121,7 @@ async def md2img(
     hightlight: bool = False,
     github_style: bool = True,
     context_args: Optional[ContextParm] = None,
-    screenshot_args: Optional[ScreenshotParm] = None,
+    screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     launart = Launart.current()
     browser = launart.get_interface(PlaywrightBrowser)

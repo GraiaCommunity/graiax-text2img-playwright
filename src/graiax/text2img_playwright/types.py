@@ -6,7 +6,7 @@ from playwright.async_api._generated import Locator
 from typing_extensions import TypedDict
 
 
-class ScreenshotParm(TypedDict, total=False):
+class ScreenshotParms(TypedDict, total=False):
     timeout: Optional[float]
     type: Optional[Literal["jpeg", "png"]]
     path: Optional[Union[str, Path]]
