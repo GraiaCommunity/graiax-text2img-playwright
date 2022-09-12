@@ -6,7 +6,7 @@ HighlightLinesRange = Tuple[int, int]
 
 def resolve_highlight_lines(info: str) -> Optional[List[HighlightLinesRange]]:
     # no highlight-lines mark, return `None`
-    if re.match(r'{([\d,-]+)}', info) is None:
+    if re.match(r"{([\d,-]+)}", info) is None:
         return
     return [(int(i),) * 2 if len(d := i.split("-")) == 1 else tuple(map(int, d)) for i in info[1:-1].split(",")]
 

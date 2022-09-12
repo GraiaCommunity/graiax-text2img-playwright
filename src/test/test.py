@@ -22,11 +22,17 @@ class Test(Launchable):
         async with self.stage("blocking"):
             with open("src/test/test.txt", encoding="utf8") as fp:
                 await md2img(fp.read())
-            with open("graiax-text2img-playwright_test.jpg", 'wb') as f:
                 with open("src/test/test.txt", encoding="utf8") as fp:
-                    f.write(await md2img(fp.read(), hightlight=True))
+                    await md2img(
+                        fp.read(),
+                        context_args={"viewport": {"width": 840, "height": 10}, "device_scale_factor": 1.5},
+                        screenshot_args={
+                            "path": "preview.jpg",
+                            "quality": 80,
+                            "scale": "device",
+                        },
+                    )
             await asyncio.sleep(10)
-            remove("graiax-text2img-playwright_test.jpg")
 
 
 loop = asyncio.new_event_loop()

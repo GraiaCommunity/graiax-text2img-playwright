@@ -2,7 +2,7 @@ from pygments import highlight, lexers
 from pygments.formatters import HtmlFormatter
 from pygments.styles import get_style_by_name
 
-one_dark = get_style_by_name('one-dark')
+one_dark = get_style_by_name("one-dark")
 formater = HtmlFormatter(style=one_dark)
 
 
