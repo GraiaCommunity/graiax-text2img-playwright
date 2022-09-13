@@ -33,7 +33,7 @@ from mdit_py_plugins.tasklists import tasklists_plugin
 from .plugins.code import code_plugin
 from .plugins.code.highlight import highlight_code
 from .types import ScreenshotParms
-from .utils import text2html, update_screenshot_args
+from .utils import text2html
 
 markdown_it = (
     MarkdownIt("gfm-like", {"highlight": highlight_code})
@@ -47,6 +47,33 @@ markdown_it = (
 )
 
 index_css = Path(Path(__file__).parent / "css" / "index.css").read_text()
+
+
+async def html2img(
+    html: str, context_args: Optional[ContextParm] = None, screenshot_args: Optional[ScreenshotParms] = None
+) -> bytes:
+    if context_args is None:
+        context_args = {}
+    if screenshot_args is None:
+        screenshot_args = {}
+
+    if "full_page" not in screenshot_args:
+        screenshot_args["full_page"] = True
+    if "type" not in screenshot_args:
+        screenshot_args["type"] = "jpeg"
+
+    launart = Launart.current()
+    browser = launart.get_interface(PlaywrightBrowser)
+
+    _context = await browser.new_context(**context_args)
+    _page = await _context.new_page()
+
+    try:
+        await _page.set_content(html)
+        return await _page.screenshot(**screenshot_args)
+    finally:
+        await _page.close()
+        await _context.close()
 
 
 async def template2img(
@@ -64,27 +91,7 @@ async def template2img(
         context_args (ContextParm, optional): Playwright 浏览器 new_context 方法的参数
         screenshot_args (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
     """
-    launart = Launart.current()
-    browser = launart.get_interface(PlaywrightBrowser)
-
-    text = Template(template).render(**render_args)
-
-    if context_args is None:
-        context_args = {}
-    if screenshot_args is None:
-        screenshot_args = {}
-
-    screenshot_args = update_screenshot_args(screenshot_args)
-
-    _context = await browser.new_context(**context_args)
-    _page = await _context.new_page()
-
-    try:
-        await _page.set_content(text)
-        return await _page.screenshot(**screenshot_args)
-    finally:
-        await _page.close()
-        await _context.close()
+    return await html2img(Template(template).render(**render_args), context_args, screenshot_args)
 
 
 async def text2img(
@@ -106,29 +113,16 @@ async def text2img(
         context_args (ContextParm, optional): Playwright 浏览器 new_context 方法的参数
         screenshot_args (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
     """
-    launart = Launart.current()
-    browser = launart.get_interface(PlaywrightBrowser)
-
-    text = text2html(text)
     text = (
         '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
-        f'<style>{extra_css}{index_css if disable_default_css else ""}</style><div class="container">{text}</div>'
+        f'<style>{extra_css}{index_css if disable_default_css else ""}</style>'
+        f'<div class="container">{text2html(text)}</div>'
     )
-
-    if context_args is None:
-        context_args = {}
-    if screenshot_args is None:
-        screenshot_args = {}
-
-    screenshot_args = update_screenshot_args(screenshot_args)
-
-    async with browser.page(context=True, **context_args) as page:
-        await page.set_content(text)
-        return await page.screenshot(**screenshot_args)
+    return await html2img(text, context_args, screenshot_args)
 
 
 async def md2img(
-    md_text: str,
+    content: str,
     disable_default_css: bool = False,
     extra_css: str = "",
     *,
@@ -139,7 +133,7 @@ async def md2img(
     """Markdown 文本转图片
 
     Args:
-        md_text (str): 要转换为图片的 Markdown 文本
+        content (str): 要转换为图片的 Markdown 文本
         disable_default_css (bool): 是否禁止使用内置 CSS
         extra_css (str): 除了内置 CSS 外需要在生成的页面中使用的 CSS
         disable_onedark_css (bool): 是否禁用内置的用于代码块高亮的 OneDark 主题，
@@ -147,9 +141,6 @@ async def md2img(
         context_args (ContextParm, optional): Playwright 浏览器 new_context 方法的参数
         screenshot_args (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
     """
-    launart = Launart.current()
-    browser = launart.get_interface(PlaywrightBrowser)
-
     if disable_default_css:
         github_css = ""
         onedark_css = ""
@@ -157,20 +148,10 @@ async def md2img(
         github_css = Path(Path(__file__).parent / "css" / "github.css").read_text()
         onedark_css = "" if disable_onedark_css else Path(Path(__file__).parent / "css" / "one-dark.css").read_text()
 
-    md_text = markdown_it.render(md_text)
-    md_text = (
+    md = (
         '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
         f'<style>{onedark_css}{github_css}{extra_css}{"" if disable_default_css else index_css}</style>'
-        f'<div class="markdown-body">{md_text}</div>'
+        f'<div class="markdown-body">{markdown_it.render(content)}</div>'
     )
 
-    if context_args is None:
-        context_args = {}
-    if screenshot_args is None:
-        screenshot_args = {}
-
-    screenshot_args = update_screenshot_args(screenshot_args)
-
-    async with browser.page(context=True, **context_args) as page:
-        await page.set_content(md_text)
-        return await page.screenshot(**screenshot_args)
+    return await html2img(md, context_args, screenshot_args)
