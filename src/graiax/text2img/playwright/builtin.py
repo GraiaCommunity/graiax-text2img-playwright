@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import Dict, Optional
 
-from graiax.playwright.pager import Parameters as ContextParm
 from jinja2 import Template
 from markdown_it import MarkdownIt
 from mdit_py_plugins.anchors.index import anchors_plugin
@@ -14,7 +13,7 @@ from mdit_py_plugins.tasklists import tasklists_plugin
 from .api import html2img
 from .plugins.code import code_plugin
 from .plugins.code.highlight import highlight_code
-from .types import ScreenshotParms
+from .types import ContextParms, ScreenshotParms
 from .utils import text2html
 
 index_css = Path(Path(__file__).parent / "css" / "index.css").read_text()
@@ -35,7 +34,7 @@ async def template2img(
     template: str,
     render_args: Dict[str, str],
     *,
-    context_args: Optional[ContextParm] = None,
+    context_args: Optional[ContextParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     """Jinja2 模板转图片
@@ -54,7 +53,7 @@ async def text2img(
     disable_default_css: bool = False,
     extra_css: str = "",
     *,
-    context_args: Optional[ContextParm] = None,
+    context_args: Optional[ContextParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     """纯文本转图片
@@ -82,7 +81,7 @@ async def md2img(
     extra_css: str = "",
     *,
     disable_onedark_css: bool = False,
-    context_args: Optional[ContextParm] = None,
+    context_args: Optional[ContextParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     """Markdown 文本转图片
