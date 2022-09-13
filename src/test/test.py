@@ -1,10 +1,9 @@
 import asyncio
-from os import remove
 
 from graiax.playwright import PlaywrightBrowser, PlaywrightService
 from launart import Launart, Launchable
 
-from graiax.text2img_playwright import *
+from graiax.text2img.playwright import *
 
 
 class Test(Launchable):

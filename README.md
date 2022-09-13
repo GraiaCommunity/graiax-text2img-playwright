@@ -28,7 +28,7 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 ### 配合 Graia Saya 使用
 
 ```python
-from graiax.text2img_playwright import md2img
+from graiax.text2img.playwright import md2img
 
 md = '''\
 <div align="center">
