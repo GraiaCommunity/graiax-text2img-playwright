@@ -3,7 +3,7 @@ import asyncio
 from graiax.playwright import PlaywrightBrowser, PlaywrightService
 from launart import Launart, Launchable
 
-from graiax.text2img.playwright import *
+from graiax.text2img.playwright.builtin import *
 
 
 class Test(Launchable):
@@ -22,11 +22,11 @@ class Test(Launchable):
             with open("src/test/test.txt", encoding="utf8") as fp:
                 await md2img(fp.read())
                 with open("src/test/test.txt", encoding="utf8") as fp:
-                    await md2img(
+                    await text2img(
                         fp.read(),
                         context_args={"viewport": {"width": 840, "height": 10}, "device_scale_factor": 1.5},
                         screenshot_args={
-                            "path": "preview.jpg",
+                            "path": "test.jpg",
                             "quality": 80,
                             "scale": "device",
                         },
