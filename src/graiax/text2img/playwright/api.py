@@ -18,17 +18,18 @@ mdit-py-plugins 的 自带可用插件列表：
 from typing import Optional
 
 from graiax.playwright import PlaywrightBrowser
-from graiax.playwright.pager import Parameters as ContextParm
 from launart import Launart
 
-from .types import ScreenshotParms
+from .types import NewPageParms, ScreenshotParms
 
 
 async def html2img(
-    html: str, context_args: Optional[ContextParm] = None, screenshot_args: Optional[ScreenshotParms] = None
+    html: str,
+    new_page_args: Optional[NewPageParms] = None,
+    screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
-    if context_args is None:
-        context_args = {}
+    if new_page_args is None:
+        new_page_args = {}
     if screenshot_args is None:
         screenshot_args = {}
 
@@ -40,12 +41,10 @@ async def html2img(
     launart = Launart.current()
     browser = launart.get_interface(PlaywrightBrowser)
 
-    _context = await browser.new_context(**context_args)
-    _page = await _context.new_page()
+    page = await browser.new_page(**new_page_args)
 
     try:
-        await _page.set_content(html)
-        return await _page.screenshot(**screenshot_args)
+        await page.set_content(html)
+        return await page.screenshot(**screenshot_args)
     finally:
-        await _page.close()
-        await _context.close()
+        await page.close()

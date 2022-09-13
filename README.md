@@ -29,7 +29,7 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 
 ```python
 from graiax.text2img.playwright.builtin import md2img
-from graiax.text2img.playwright.types import ContextParms, ScreenshotParms
+from graiax.text2img.playwright.types import NewPageParms, ScreenshotParms
 
 md = '''\
 <div align="center">
@@ -54,7 +54,7 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 async def function(app: Ariadne, friend: Friend):
     image_bytes = await md2img(
         md,
-        context_args=ContextParms(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
+        context_args=NewPageParms(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
         screenshot_args=ScreenshotParms(type="jpeg", quality=80, scale="device"),
     )
     await app.sendMessage(friend, MessageChain(Image(data_bytes=image_bytes)))

@@ -29,7 +29,7 @@ class Test(Launchable):
             with open("README.md", encoding="utf8") as fp:
                 await md2img(
                     fp.read(),
-                    context_args=ContextParms(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
+                    context_args=NewPageParms(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
                     screenshot_args=ScreenshotParms(type="jpeg", path="test.jpg", quality=80, scale="device"),
                 )
             await asyncio.sleep(10)
