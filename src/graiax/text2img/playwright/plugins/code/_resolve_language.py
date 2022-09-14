@@ -22,7 +22,7 @@ languages_map = {
     "PHP": {"ext": "php", "aliases": ("php",)},
     "PowerShell": {"ext": "pwsh", "aliases": ("powershell", "pwsh", "posh", "ps1")},
     "Python": {"ext": "py", "aliases": ("python", "py")},
-    "Python Traceback": {"ext": "py", "aliases": ("pytb")},
+    "Python Traceback": {"ext": "py", "aliases": ("pytb", "py3tb")},
     "Ruby": {"ext": "ruby", "aliases": ("ruby", "rb")},
     "Rust": {"ext": "rust", "aliases": ("rust", "rs")},
     "Sass": {"ext": "sass", "aliases": ("sass",)},
