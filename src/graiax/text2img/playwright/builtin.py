@@ -36,7 +36,7 @@ async def template2img(
     render_args: Dict[str, str],
     html: Literal[False] = False,
     *,
-    context_args: Optional[NewPageParms] = None,
+    page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     ...
@@ -56,7 +56,7 @@ async def template2img(
     render_args: Dict[str, str],
     html: bool = False,
     *,
-    context_args: Optional[NewPageParms] = None,
+    page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> Union[str, bytes]:
     """Jinja2 模板转图片
@@ -65,11 +65,11 @@ async def template2img(
         template (str): Jinja2 模板
         render_args (Dict[str, str]): Jinja2.Template.render 的参数
         html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
-        context_args (ContextParm, optional): Playwright 浏览器 new_context 方法的参数
+        page_args (NewPageParms, optional): Playwright 浏览器 new_page 方法的参数
         screenshot_args (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
     """
     html_code: str = Template(template).render(**render_args)
-    return html_code if html else await html2img(html_code, context_args, screenshot_args)
+    return html_code if html else await html2img(html_code, page_args, screenshot_args)
 
 
 @overload
@@ -79,7 +79,7 @@ async def text2img(
     extra_css: str = "",
     html: Literal[False] = False,
     *,
-    context_args: Optional[NewPageParms] = None,
+    page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     ...
@@ -101,7 +101,7 @@ async def text2img(
     extra_css: str = "",
     html: bool = False,
     *,
-    context_args: Optional[NewPageParms] = None,
+    page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> Union[str, bytes]:
     """纯文本转图片
@@ -113,7 +113,7 @@ async def text2img(
         disable_default_css (bool): 是否禁止使用内置 CSS
         extra_css (str): 除了内置 CSS 外需要在生成的页面中使用的 CSS
         html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
-        context_args (ContextParm, optional): Playwright 浏览器 new_context 方法的参数
+        page_args (NewPageParms, optional): Playwright 浏览器 new_page 方法的参数
         screenshot_args (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
     """
     html_code = (
@@ -121,7 +121,7 @@ async def text2img(
         f'<style>{extra_css}{index_css if disable_default_css else ""}</style>'
         f'<div class="container">{text2html(text)}</div>'
     )
-    return html_code if html else await html2img(html_code, context_args, screenshot_args)
+    return html_code if html else await html2img(html_code, page_args, screenshot_args)
 
 
 @overload
@@ -132,7 +132,7 @@ async def md2img(
     html: Literal[False] = False,
     *,
     disable_onedark_css: bool = False,
-    context_args: Optional[NewPageParms] = None,
+    page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ) -> bytes:
     ...
@@ -157,7 +157,7 @@ async def md2img(
     html: bool = False,
     *,
     disable_onedark_css: bool = False,
-    context_args: Optional[NewPageParms] = None,
+    page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
 ):
     """Markdown 文本转图片
@@ -169,7 +169,7 @@ async def md2img(
         html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
         disable_onedark_css (bool): 是否禁用内置的用于代码块高亮的 OneDark 主题，
             可通过 extra_css 参数传入其他适用于 pygments 生成结果的 CSS
-        context_args (ContextParm, optional): Playwright 浏览器 new_context 方法的参数
+        page_args (NewPageParms, optional): Playwright 浏览器 new_page 方法的参数
         screenshot_args (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
     """
     if disable_default_css:
@@ -182,7 +182,7 @@ async def md2img(
     html_code = (
         '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
         f'<style>{onedark_css}{github_css}{extra_css}{"" if disable_default_css else index_css}</style>'
-        f'<div class="markdown-body">{markdown_it.render(content)}</div>'
+        f'<div class="markdown-body">{md.render(content)}</div>'
     )
 
-    return html_code if html else await html2img(html_code, context_args, screenshot_args)
+    return html_code if html else await html2img(html_code, page_args, screenshot_args)
