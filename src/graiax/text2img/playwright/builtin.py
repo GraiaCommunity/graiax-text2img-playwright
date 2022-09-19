@@ -148,6 +148,7 @@ async def md2img(
     extra_css: str = "",
     html: Literal[False] = False,
     *,
+    md: MarkdownIt = markdown_it,
     disable_onedark_css: bool = False,
     page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
@@ -162,6 +163,7 @@ async def md2img(
     extra_css: str = "",
     html: Literal[True] = True,
     *,
+    md: MarkdownIt = markdown_it,
     disable_onedark_css: bool = False,
 ) -> str:
     ...
@@ -173,6 +175,7 @@ async def md2img(
     extra_css: str = "",
     html: bool = False,
     *,
+    md: MarkdownIt = markdown_it,
     disable_onedark_css: bool = False,
     page_args: Optional[NewPageParms] = None,
     screenshot_args: Optional[ScreenshotParms] = None,
