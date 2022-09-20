@@ -16,7 +16,7 @@ mdit-py-plugins 的 自带可用插件列表：
 """
 
 from pathlib import Path
-from typing import Dict, Literal, Optional, Union, overload
+from typing import Awaitable, Callable, Dict, List, Literal, Optional, Union, overload
 
 from jinja2 import Template
 from markdown_it import MarkdownIt
@@ -26,6 +26,7 @@ from mdit_py_plugins.anchors.index import anchors_plugin
 from mdit_py_plugins.footnote.index import footnote_plugin
 from mdit_py_plugins.front_matter.index import front_matter_plugin
 from mdit_py_plugins.tasklists import tasklists_plugin
+from playwright.async_api import Page
 
 from .api import html2img
 from .plugins.code import code_plugin
@@ -55,6 +56,7 @@ async def template2img(
     return_html: Literal[False] = False,
     page_parms: Optional[PageParms] = None,
     screenshot_parms: Optional[ScreenshotParms] = None,
+    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
 ) -> bytes:
     ...
 
@@ -76,6 +78,7 @@ async def template2img(
     return_html: bool = False,
     page_parms: Optional[PageParms] = None,
     screenshot_parms: Optional[ScreenshotParms] = None,
+    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
 ) -> Union[str, bytes]:
     """Jinja2 模板转图片
 
@@ -85,6 +88,9 @@ async def template2img(
         return_html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
         page_parms (PageParms, optional): Playwright 浏览器 new_page 方法的参数
         screenshot_parms (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
+        extra_page_methods (Optional[List[Callable[[Page], Awaitable]]]):
+            默认为 None，用于 https://playwright.dev/python/docs/api/class-page 中提到的部分方法，
+            如 `page.route(...)` 等
     """
     html_code: str = Template(template).render(**render_parms)
     return (
@@ -94,6 +100,7 @@ async def template2img(
             html_code,
             page_parms=page_parms,
             screenshot_parms=screenshot_parms,
+            extra_page_methods=extra_page_methods,
         )
     )
 
@@ -107,6 +114,7 @@ async def text2img(
     return_html: Literal[False] = False,
     page_parms: Optional[PageParms] = None,
     screenshot_parms: Optional[ScreenshotParms] = None,
+    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
 ) -> bytes:
     ...
 
@@ -118,6 +126,7 @@ async def text2img(
     disable_default_css: bool = False,
     extra_css: str = "",
     return_html: Literal[True] = True,
+    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
 ) -> str:
     ...
 
@@ -130,6 +139,7 @@ async def text2img(
     return_html: bool = False,
     page_parms: Optional[PageParms] = None,
     screenshot_parms: Optional[ScreenshotParms] = None,
+    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
 ) -> Union[str, bytes]:
     """纯文本转图片
 
@@ -142,6 +152,9 @@ async def text2img(
         return_html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
         page_parms (PageParms, optional): Playwright 浏览器 new_page 方法的参数
         screenshot_parms (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
+        extra_page_methods (Optional[List[Callable[[Page], Awaitable]]]):
+            默认为 None，用于 https://playwright.dev/python/docs/api/class-page 中提到的部分方法，
+            如 `page.route(...)` 等
     """
     html_code = (
         '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
@@ -155,6 +168,7 @@ async def text2img(
             html_code,
             page_parms=page_parms,
             screenshot_parms=screenshot_parms,
+            extra_page_methods=extra_page_methods,
         )
     )
 
@@ -170,6 +184,7 @@ async def md2img(
     disable_onedark_css: bool = False,
     page_parms: Optional[PageParms] = None,
     screenshot_parms: Optional[ScreenshotParms] = None,
+    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
 ) -> bytes:
     ...
 
@@ -197,6 +212,7 @@ async def md2img(
     disable_onedark_css: bool = False,
     page_parms: Optional[PageParms] = None,
     screenshot_parms: Optional[ScreenshotParms] = None,
+    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
 ):
     """Markdown 文本转图片
 
@@ -209,6 +225,9 @@ async def md2img(
             可通过 extra_css 参数传入其他适用于 pygments 生成结果的 CSS
         page_parms (PageParms, optional): Playwright 浏览器 new_page 方法的参数
         screenshot_parms (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
+        extra_page_methods (Optional[List[Callable[[Page], Awaitable]]]):
+            默认为 None，用于 https://playwright.dev/python/docs/api/class-page 中提到的部分方法，
+            如 `page.route(...)` 等
     """
     if disable_default_css:
         github_css = ""
@@ -230,5 +249,6 @@ async def md2img(
             html_code,
             page_parms=page_parms,
             screenshot_parms=screenshot_parms,
+            extra_page_methods=extra_page_methods,
         )
     )
