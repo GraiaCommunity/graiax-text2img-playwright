@@ -1,33 +1,43 @@
-from typing import Optional
+from typing import Awaitable, Callable, List, Optional
 
 from graiax.playwright import PlaywrightBrowser
 from launart import Launart
+from playwright.async_api import Page
 
-from .types import NewPageParms, ScreenshotParms
+from .types import PageParms, ScreenshotParms
 
 
 async def html2img(
-    html: str,
-    new_page_args: Optional[NewPageParms] = None,
-    screenshot_args: Optional[ScreenshotParms] = None,
+    html_code: str,
+    *,
+    page_parms: Optional[PageParms] = None,
+    screenshot_parms: Optional[ScreenshotParms] = None,
 ) -> bytes:
-    if new_page_args is None:
-        new_page_args = {}
-    if screenshot_args is None:
-        screenshot_args = {}
+    """纯 HTML 代码转图片
 
-    if "full_page" not in screenshot_args:
-        screenshot_args["full_page"] = True
-    if "type" not in screenshot_args:
-        screenshot_args["type"] = "jpeg"
+    Args:
+        html_code (str): HTML 代码
+        page_parms (Optional[PageParms]): 默认为 None，用于新建 Playwright 页面的参数
+        screenshot_parms (Optional[ScreenshotParms]): 默认为 None，用于 Playwright 截图的参数
+    """
+
+    if page_parms is None:
+        page_parms = {}
+    if screenshot_parms is None:
+        screenshot_parms = {}
+
+    if "full_page" not in screenshot_parms:
+        screenshot_parms["full_page"] = True
+    if "type" not in screenshot_parms:
+        screenshot_parms["type"] = "jpeg"
 
     launart = Launart.current()
     browser = launart.get_interface(PlaywrightBrowser)
 
-    page = await browser.new_page(**new_page_args)
+    page = await browser.new_page(**page_parms)
 
     try:
-        await page.set_content(html)
-        return await page.screenshot(**screenshot_args)
+        await page.set_content(html_code)
+        return await page.screenshot(**screenshot_parms)
     finally:
         await page.close()

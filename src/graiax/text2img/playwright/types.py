@@ -1,12 +1,12 @@
 from pathlib import Path
 from typing import List, Literal, Optional, Union
 
-from graiax.playwright.interface import Parameters as NewPageParms
+from graiax.playwright.interface import Parameters as PageParms
 from playwright._impl._api_structures import FloatRect
 from playwright.async_api._generated import Locator
 from typing_extensions import TypedDict
 
-__all__ = ("NewPageParms", "ScreenshotParms")
+__all__ = ("PageParms", "ScreenshotParms")
 
 
 class ScreenshotParms(TypedDict, total=False):
