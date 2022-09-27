@@ -1,21 +1,26 @@
 import re
+from typing import List, MutableMapping
 
 from markdown_it import MarkdownIt
 from markdown_it.common.utils import escapeHtml, unescapeAll
+from markdown_it.renderer import RendererHTML
 from markdown_it.token import Token
+from markdown_it.utils import OptionsDict
 
-from ._resolve_highlight_lines import is_highlight_line, resolve_highlight_lines
-from ._resolve_language import resolve_language
+from .highlight_lines import is_highlight_line, resolve_highlight_lines
+from .language_resolver import resolve_language
 
 
-def fence(self, tokens, idx, options, env):
+def fence(md: RendererHTML, tokens: List[Token], idx: int, options: OptionsDict, env: MutableMapping):
     token: Token = tokens[idx]
 
     info = token.info if unescapeAll(token.info).strip() else ""
     language = resolve_language(info)
     language_class = f'{options["langPrefix"]}{language["name"].lower()}'
     code: str = (
-        options["highlight"](token.content, language["name"]) if options["highlight"] else escapeHtml(token.content)
+        options["highlight"](code=token.content, lang=language["name"])
+        if options["highlight"]
+        else escapeHtml(token.content)
     )
     result = code if code.startswith("<pre") else f'<pre class="{language_class}"><code>{code}</code></pre>'
     lines = code.split("\n")[:-1]
