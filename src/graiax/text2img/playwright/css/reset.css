@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  padding: 25px 20px;
+}
+@media screen and (min-width: 500px) {
+  body {
+    padding: 45px 40px;
+  }
+}
+@media screen and (min-width: 800px) {
+  body {
+    padding: 60px 50px;
+  }
+}
+@media screen and (min-width: 1280px) {
+  body {
+    padding: 85px 70px;
+  }
+}

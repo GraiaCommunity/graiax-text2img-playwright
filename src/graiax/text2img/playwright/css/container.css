@@ -1,0 +1,34 @@
+.custom-block {
+  margin: 16px 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 16px 16px 8px;
+  line-height: 24px;
+  font-size: 14px;
+  overflow-wrap: break-word;
+  color: rgba(60, 60, 60, .7);
+}
+.custom-block p:first-child{
+    margin: 0;
+}
+.custom-block p {
+    margin: 8px 0;
+}
+.custom-block-title {
+    font-weight: 700;
+}
+.custom-block.tip {
+  border-color: rgba(66, 184, 131, .5);
+  color: #155f3e;
+  background-color: rgba(66, 184, 131, .05);
+}
+.custom-block.warnning {
+  border-color: rgba(255, 197, 23, .5);
+  color: #ad850e;
+  background-color: rgba(255, 197, 23, .05);
+}
+.custom-block.danger {
+  border-color: rgba(237, 60, 80, .5);
+  color: #ab2131;
+  background-color: rgba(237, 60, 80, .05);
+}

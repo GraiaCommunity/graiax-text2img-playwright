@@ -20,32 +20,13 @@ from typing import Awaitable, Callable, Dict, List, Literal, Optional, Union, ov
 
 from jinja2 import Template
 from markdown_it import MarkdownIt
-from mdit_py_plugins.anchors.index import anchors_plugin
-
-# from mdit_py_plugins.container.index import container_plugin
-from mdit_py_plugins.footnote.index import footnote_plugin
-from mdit_py_plugins.front_matter.index import front_matter_plugin
-from mdit_py_plugins.tasklists import tasklists_plugin
 from playwright.async_api import Page
 
 from .api import html2img
-from .plugins.code import code_plugin
-from .plugins.code.highlight import highlight_code
 from .types import PageParms, ScreenshotParms
 from .utils import text2html
 
-index_css = Path(Path(__file__).parent / "css" / "index.css").read_text()
-
-markdown_it = (
-    MarkdownIt("gfm-like", {"highlight": highlight_code})
-    .use(anchors_plugin)
-    # .use(container_plugin, name="tip")  # TODO
-    .use(footnote_plugin)
-    .use(tasklists_plugin)
-    .use(front_matter_plugin)
-    .use(code_plugin)
-    .enable("table")
-)
+reset_css = Path(Path(__file__).parent / "css" / "reset.css").read_text()
 
 
 @overload
@@ -109,7 +90,7 @@ async def template2img(
 async def text2img(
     text: str,
     *,
-    disable_default_css: bool = False,
+    disable_reset_css: bool = False,
     extra_css: str = "",
     return_html: Literal[False] = False,
     page_parms: Optional[PageParms] = None,
@@ -123,7 +104,7 @@ async def text2img(
 async def text2img(
     text: str,
     *,
-    disable_default_css: bool = False,
+    disable_reset_css: bool = False,
     extra_css: str = "",
     return_html: Literal[True] = True,
     extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
@@ -134,7 +115,7 @@ async def text2img(
 async def text2img(
     text: str,
     *,
-    disable_default_css: bool = False,
+    disable_reset_css: bool = False,
     extra_css: str = "",
     return_html: bool = False,
     page_parms: Optional[PageParms] = None,
@@ -147,8 +128,8 @@ async def text2img(
 
     Args:
         text (str): 要转换为图片的文本
-        disable_default_css (bool): 是否禁止使用内置 CSS
-        extra_css (str): 除了内置 CSS 外需要在生成的页面中使用的 CSS
+        disable_reset_css (bool): 是否禁用 Reset CSS
+        extra_css (str): 除了内置 CSS 外需要使用的 CSS
         return_html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
         page_parms (PageParms, optional): Playwright 浏览器 new_page 方法的参数
         screenshot_parms (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
@@ -158,7 +139,7 @@ async def text2img(
     """
     html_code = (
         '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
-        f'<style>{extra_css}{index_css if disable_default_css else ""}</style>'
+        f'<style>{extra_css}{"" if disable_reset_css else reset_css}</style>'
         f'<div class="container">{text2html(text)}</div>'
     )
     return (
@@ -173,82 +154,124 @@ async def text2img(
     )
 
 
-@overload
-async def md2img(
-    content: str,
-    *,
-    md: MarkdownIt = markdown_it,
-    disable_default_css: bool = False,
-    extra_css: str = "",
-    return_html: Literal[False] = False,
-    disable_onedark_css: bool = False,
-    page_parms: Optional[PageParms] = None,
-    screenshot_parms: Optional[ScreenshotParms] = None,
-    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
-) -> bytes:
-    ...
+class MarkdownToImg:
+    def __init__(self, md: Optional[MarkdownIt] = None, css: str = ""):
+        """Markdown 转图片
 
+        Args:
+            md (Optional[MarkdownIt]): MarkdownIt 实例，若不指定 MarkdownIt 实例，则有额外的无法禁用的内置 CSS
+            css (str): 额外的全局 CSS
+        """
 
-@overload
-async def md2img(
-    content: str,
-    *,
-    md: MarkdownIt = markdown_it,
-    disable_default_css: bool = False,
-    extra_css: str = "",
-    return_html: Literal[True] = True,
-    disable_onedark_css: bool = False,
-) -> str:
-    ...
+        if md:
+            self.md = md
+            self.builtin_css = css
+        else:
+            from mdit_py_emoji import emoji_plugin
+            from mdit_py_plugins.anchors.index import anchors_plugin
+            from mdit_py_plugins.container.index import container_plugin
+            from mdit_py_plugins.footnote.index import footnote_plugin
+            from mdit_py_plugins.front_matter.index import front_matter_plugin
+            from mdit_py_plugins.tasklists import tasklists_plugin
 
+            from .plugins.code import code_plugin
+            from .plugins.code.highlight_code import Highlight
+            from .plugins.custom_container import CreateContainer
 
-async def md2img(
-    content: str,
-    *,
-    md: MarkdownIt = markdown_it,
-    disable_default_css: bool = False,
-    extra_css: str = "",
-    return_html: bool = False,
-    disable_onedark_css: bool = False,
-    page_parms: Optional[PageParms] = None,
-    screenshot_parms: Optional[ScreenshotParms] = None,
-    extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
-):
-    """Markdown 文本转图片
+            tip_container = CreateContainer("tip", "提示")
+            warnning_container = CreateContainer("warnning", "注意")
+            danger_container = CreateContainer("danger", "警告")
 
-    Args:
-        content (str): 要转换为图片的 Markdown 文本
-        disable_default_css (bool): 是否禁止使用内置 CSS
-        extra_css (str): 除了内置 CSS 外需要在生成的页面中使用的 CSS
-        return_html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
-        disable_onedark_css (bool): 是否禁用内置的用于代码块高亮的 OneDark 主题，
-            可通过 extra_css 参数传入其他适用于 pygments 生成结果的 CSS
-        page_parms (PageParms, optional): Playwright 浏览器 new_page 方法的参数
-        screenshot_parms (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
-        extra_page_methods (Optional[List[Callable[[Page], Awaitable]]]):
-            默认为 None，用于 https://playwright.dev/python/docs/api/class-page 中提到的部分方法，
-            如 `page.route(...)` 等
-    """
-    if disable_default_css:
-        github_css = ""
-        onedark_css = ""
-    else:
-        github_css = Path(Path(__file__).parent / "css" / "github.css").read_text()
-        onedark_css = "" if disable_onedark_css else Path(Path(__file__).parent / "css" / "one-dark.css").read_text()
+            onedark_css = Path(Path(__file__).parent / "css" / "one-dark.css").read_text()
+            container_css = Path(Path(__file__).parent / "css" / "container.css").read_text()
+            github_css = Path(Path(__file__).parent / "css" / "github.css").read_text()
 
-    html_code = (
-        '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
-        f'<style>{onedark_css}{github_css}{extra_css}{"" if disable_default_css else index_css}</style>'
-        f'<div class="markdown-body">{md.render(content)}</div>'
-    )
+            self.builtin_css = css + github_css + onedark_css + container_css
 
-    return (
-        html_code
-        if return_html
-        else await html2img(
-            html_code,
-            page_parms=page_parms,
-            screenshot_parms=screenshot_parms,
-            extra_page_methods=extra_page_methods,
+            self.md = (
+                MarkdownIt("gfm-like", {"highlight": Highlight().render})
+                .use(anchors_plugin)
+                .use(container_plugin, name="tip", validate=tip_container.validate, render=tip_container.create)
+                .use(
+                    container_plugin,
+                    name="warnning",
+                    validate=warnning_container.validate,
+                    render=warnning_container.create,
+                )
+                .use(
+                    container_plugin, name="danger", validate=danger_container.validate, render=danger_container.create
+                )
+                .use(footnote_plugin)
+                .use(tasklists_plugin)
+                .use(front_matter_plugin)
+                .use(code_plugin)
+                .use(emoji_plugin)
+                .enable("table")
+            )
+
+    @overload
+    async def render(
+        self,
+        content: str,
+        *,
+        disable_reset_css: bool = False,
+        extra_css: str = "",
+        return_html: Literal[False] = False,
+        page_parms: Optional[PageParms] = None,
+        screenshot_parms: Optional[ScreenshotParms] = None,
+        extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
+    ) -> bytes:
+        ...
+
+    @overload
+    async def render(
+        self,
+        content: str,
+        *,
+        disable_reset_css: bool = False,
+        extra_css: str = "",
+        return_html: Literal[True] = True,
+    ) -> str:
+        ...
+
+    async def render(
+        self,
+        content: str,
+        *,
+        disable_reset_css: bool = False,
+        extra_css: str = "",
+        return_html: bool = False,
+        page_parms: Optional[PageParms] = None,
+        screenshot_parms: Optional[ScreenshotParms] = None,
+        extra_page_methods: Optional[List[Callable[[Page], Awaitable]]] = None,
+    ):
+        """渲染 Markdown
+
+        Args:
+            content (str): 要转换为图片的 Markdown 文本
+            disable_reset_css (bool): 是否禁用 Reset CSS
+            extra_css (str): 除了内置 CSS 外需要使用的 CSS
+            return_html (bool): 返回生成的 HTML 代码而不是图片生成结果的 bytes
+            page_parms (PageParms, optional): Playwright 浏览器 new_page 方法的参数
+            screenshot_parms (ScreenshotParms, optional): Playwright 浏览器页面截图方法的参数
+            extra_page_methods (Optional[List[Callable[[Page], Awaitable]]]):
+                默认为 None，用于 https://playwright.dev/python/docs/api/class-page 中提到的部分方法，
+                如 `page.route(...)` 等
+        """
+
+        html_code = (
+            '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
+            f'<style>{self.builtin_css}{extra_css}{"" if disable_reset_css else reset_css}</style>'
+            f'<div class="markdown-body">{self.md.render(content)}</div>'
         )
-    )
+
+        return (
+            html_code
+            if return_html
+            else await html2img(
+                html_code,
+                page_parms=page_parms,
+                screenshot_parms=screenshot_parms,
+                extra_page_methods=extra_page_methods,
+            )
+        )
