@@ -1,3 +1,7 @@
+"""
+移植自：https://github.com/vuejs/vitepress/blob/main/src/node/markdown/plugins/containers.ts
+"""
+
 from typing import List, MutableMapping
 
 from markdown_it.token import Token

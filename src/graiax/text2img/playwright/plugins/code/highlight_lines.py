@@ -1,3 +1,7 @@
+"""
+移植自 https://github.com/vuepress/vuepress-next/blob/main/packages/markdown/src/plugins/codePlugin/resolveHighlightLines.ts
+"""
+
 import re
 from typing import List, Optional
 
