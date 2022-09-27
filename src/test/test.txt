@@ -57,8 +57,25 @@ async def function(app: Ariadne, friend: Friend):
 
 ## 预览
 
-![preview](preview.jpg)
+`[图片]`
 
 ## 许可证
 
 本项目使用 [`MIT`](./LICENSE) 许可证进行许可。
+
+
+::::tip
+这是一个 `tip` **测试**
+::::
+
+:::warnning 注意？注意！！
+> 这是一个 `warnning` **测试**
+:::
+
+:::danger警告一下
+
+```python
+# 这是一个 `danger` **测试**
+```
+
+:::
