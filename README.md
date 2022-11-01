@@ -1,8 +1,8 @@
 <div align="center">
 
-# (WIP) Graiax Text2img Playwright
+# Graiax Text2img Playwright
 
-*(WIP) 基于 Playwright 的适用于 Graia 的文转图工具*
+*基于 Playwright 的适用于 Graia 的文转图工具*
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
@@ -34,9 +34,9 @@ from graiax.text2img.playwright.types import NewPageParams, ScreenshotParams
 md = '''\
 <div align="center">
 
-# (WIP) Graiax Text2img Playwright
+# Graiax Text2img Playwright
 
-*(WIP) 基于 Playwright 的适用于 Graia 的文转图工具*
+*基于 Playwright 的适用于 Graia 的文转图工具*
 
 </div>
 
@@ -50,9 +50,11 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 > 我们强烈建议使用包管理器或虚拟环境
 '''
 
+md2img = MarkdownToImg()  # 你也可以全局共享该实例
+
 @listen(FriendMessage)
 async def function(app: Ariadne, friend: Friend):
-    image_bytes = await MarkdownToImg().render(
+    image_bytes = await md2img.render(
         md,
         context_args=NewPageParams(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
         screenshot_args=ScreenshotParams(type="jpeg", quality=80, scale="device"),
