@@ -260,7 +260,7 @@ class MarkdownToImg:
         """
 
         html_code = (
-            '<meta name="viewport" content="width=device-width,initial-scale=1.0">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
             f'<style>{self.builtin_css}{extra_css}{"" if disable_reset_css else reset_css}</style>'
             f'<div class="markdown-body">{self.md.render(content)}</div>'
         )

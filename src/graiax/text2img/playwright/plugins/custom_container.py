@@ -26,4 +26,4 @@ class CreateContainer:
             return "</div>\n"
 
     def validate(self, marker: str, _):
-        return True if marker.startswith(self.klass) else False
+        return bool(marker.startswith(self.klass))
