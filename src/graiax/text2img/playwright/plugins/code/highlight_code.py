@@ -9,11 +9,11 @@ from pygments.styles import get_style_by_name
 
 
 class Highlight:
-    def __init__(self, *, theme: str = "one-dark", formatter: Optional[Type[Formatter]] = None, **formatter_parms):
+    def __init__(self, *, theme: str = "one-dark", formatter: Optional[Type[Formatter]] = None, **formatter_params):
         if formatter is None:
-            self.formatter = HtmlFormatter(style=get_style_by_name(theme), **formatter_parms)
+            self.formatter = HtmlFormatter(style=get_style_by_name(theme), **formatter_params)
         else:
-            self.formatter = formatter(**formatter_parms)
+            self.formatter = formatter(**formatter_params)
 
     @overload
     def render(self, code: str, lang: str) -> str:

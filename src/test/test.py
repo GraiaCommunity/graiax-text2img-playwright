@@ -23,14 +23,14 @@ class Test(Launchable):
             # with open("src/README.md", encoding="utf8") as fp:
             #     await md2img(
             #         fp.read(),
-            #         page_parms={"viewport": {"width": 840, "height": 10}, "device_scale_factor": 1.5},
+            #         page_params={"viewport": {"width": 840, "height": 10}, "device_scale_factor": 1.5},
             #         screenshot_args={"path": "test.jpg", "quality": 80, "scale": "device"},
             #     )
             with open("src/test/test.txt", encoding="utf8") as fp:
                 await MarkdownToImg().render(
                     fp.read(),
-                    page_parms=PageParms(viewport={"width": 840, "height": 10}, device_scale_factor=2),
-                    screenshot_parms=ScreenshotParms(type="jpeg", path="test.jpg", quality=80, scale="device"),
+                    page_params=PageParams(viewport={"width": 840, "height": 10}, device_scale_factor=2),
+                    screenshot_params=ScreenshotParams(type="jpeg", path="test.jpg", quality=80, scale="device"),
                 )
 
 
