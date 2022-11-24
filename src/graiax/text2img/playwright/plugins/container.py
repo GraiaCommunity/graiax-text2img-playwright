@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import MutableMapping, Optional, Union, List
+from typing import List, MutableMapping, Optional, Union
 
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
