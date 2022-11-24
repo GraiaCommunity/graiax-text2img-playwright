@@ -1,6 +1,6 @@
 [project]
 name = "graiax-text2img-playwright"
-version = "0.1.0"
+version = "0.2.0"
 description = "基于 Playwright 的适用于 Graia 的文转图工具"
 authors = [
     {name = "Redlnn", email = "w731347477@gmail.com"},
@@ -8,14 +8,13 @@ authors = [
 ]
 dependencies = [
     "graiax-playwright>=0.2.1,<0.3.0",
-    "jinja2>=3.1.2",
     "launart>=0.6.1,<0.7.0",
     "markdown-it-py[linkify,plugins]>=2.1.0",
     "pygments>=2.13.0",
     "typing-extensions>=4.4.0",
     "mdit-py-emoji>=0.1.0",
 ]
-keywords = ["graia", "graiax", "text2img", "playwright", "jinja2"]
+keywords = ["graia", "graiax", "text2img", "playwright"]
 requires-python = ">=3.8"
 readme = "README.md"
 license = {text = "MIT"}
