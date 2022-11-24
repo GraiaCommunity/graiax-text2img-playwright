@@ -69,7 +69,9 @@ class BuiltinCSS(Enum):
 
 
 class HTMLRenderer:
-    """_summary_
+    """HTML 渲染器
+
+    用于将 HTML 代码转换为图片
 
     Args:
         page_option (PageOption, optional): 截图时使用的页面设置.
@@ -78,18 +80,22 @@ class HTMLRenderer:
         css (Sequence[Union[BuiltinCSS, str]], optional): 要加载的 CSS.
             默认包含 Reset CSS、GitHub Markdown 样式、One Dark 代码高亮主题、VitePress 样式的 container CSS.
             如有不需要或想覆盖这些默认 CSS，则传入一个包含 CSS 字符串的列表.
+        page_modifiers (List[Callable[[Page], Awaitable]], optional): 接受 Page 实例的方法/函数.
+            用于对 Page 本身进行额外的修改，如: 使用 page.route 重定向资源文件到本地文件.
     """
 
     def __init__(
         self,
         page_option: Optional[PageOption] = None,
         screenshot_option: Optional[ScreenshotOption] = None,
+        *,
         css: Sequence[Union[BuiltinCSS, str]] = (
             BuiltinCSS.reset,
             BuiltinCSS.github,
             BuiltinCSS.one_dark,
             BuiltinCSS.container,
         ),
+        page_modifiers: Optional[List[Callable[[Page], Awaitable]]] = None,
     ):
         if isinstance(css, str):
             css = [css]
@@ -100,6 +106,7 @@ class HTMLRenderer:
         self.page_option: PageOption = page_option
         self.screenshot_option: ScreenshotOption = screenshot_option
         self.style: str = "\n".join(i.value if isinstance(i, BuiltinCSS) else i for i in css)
+        self.page_modifiers = page_modifiers or []
 
     async def render(
         self,
@@ -107,7 +114,7 @@ class HTMLRenderer:
         *,
         extra_screenshot_option: Optional[ScreenshotOption] = None,
         extra_page_option: Optional[PageOption] = None,
-        page_modifiers: Sequence[Callable[[Page], Awaitable]] = (),
+        extra_page_modifiers: Optional[List[Callable[[Page], Awaitable]]] = None,
     ) -> bytes:
         """渲染 HTML 代码为图片
 
@@ -115,8 +122,9 @@ class HTMLRenderer:
             content (str): 要渲染的 HTML 代码
             extra_screenshot_option (Optional[ScreenshotOption], optional): 额外的截图设置.
             extra_page_option (Optional[PageOption], optional): 额外的页面设置.
-            page_modifiers (Sequence[Callable[[Page], Awaitable]], optional): 接受 Page 实例的方法/函数.
-                用于对 Page 本身进行额外的修改，如: 使用 page.route 重定向资源文件到本地文件
+            extra_page_modifiers (List[Callable[[Page], Awaitable]], optional): 接受 Page 实例的方法/函数.
+                用于对 Page 本身进行额外的修改，如: 使用 page.route 重定向资源文件到本地文件.
+                仅本次截图使用.
 
         Returns:
             bytes: 渲染结果图的 bytes 数据
@@ -125,9 +133,10 @@ class HTMLRenderer:
 
         page_option: PageOption = {**self.page_option, **(extra_page_option or {})}
         screenshot_option: ScreenshotOption = {**self.screenshot_option, **(extra_screenshot_option or {})}
+        self.page_modifiers.extend(extra_page_modifiers or [])
 
         async with browser.page(**page_option or {}) as page:
-            for modifier in page_modifiers:
+            for modifier in self.page_modifiers:
                 await modifier(page)
             await page.set_content(
                 '<meta name="viewport" content="width=device-width,initial-scale=1.0">\n'
