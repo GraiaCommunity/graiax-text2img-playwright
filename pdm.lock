@@ -240,7 +240,7 @@ summary = "A small Python utility to set file creation time on Windows"
 
 [metadata]
 lock_version = "4.0"
-content_hash = "sha256:ef309aea7a5de0d05232e46f394628125b3a686d4f333f0cdb68a8000503f2c8"
+content_hash = "sha256:9cfd9b76d3ffb8a60d47c778fbdb263fe3deda90eb6ad15d906b939f827d7957"
 
 [metadata.files]
 "black 22.10.0" = [

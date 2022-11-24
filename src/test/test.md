@@ -68,8 +68,8 @@ async def function(app: Ariadne, friend: Friend):
 这是一个 `tip` **测试**
 ::::
 
-:::warnning 注意？注意！！
-> 这是一个 `warnning` **测试**
+:::warning 注意？注意！！
+> 这是一个 `warning` **测试**
 :::
 
 :::danger警告一下
@@ -77,5 +77,11 @@ async def function(app: Ariadne, friend: Friend):
 ```python
 # 这是一个 `danger` **测试**
 ```
+
+:::
+
+:::blue
+
+testing blue
 
 :::

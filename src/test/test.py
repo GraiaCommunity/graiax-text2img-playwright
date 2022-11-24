@@ -3,8 +3,8 @@ import asyncio
 from graiax.playwright import PlaywrightBrowser, PlaywrightService
 from launart import Launart, Launchable
 
-from graiax.text2img.playwright.builtin import *
-from graiax.text2img.playwright.types import *
+from graiax.text2img.playwright import *
+from graiax.text2img.playwright.plugins.container import TIP, WARNING, DANGER, Container, ContainerColor
 
 
 class Test(Launchable):
@@ -26,11 +26,24 @@ class Test(Launchable):
             #         page_params={"viewport": {"width": 840, "height": 10}, "device_scale_factor": 1.5},
             #         screenshot_args={"path": "test.jpg", "quality": 80, "scale": "device"},
             #     )
-            with open("src/test/test.txt", encoding="utf8") as fp:
-                await MarkdownToImg().render(
-                    fp.read(),
-                    page_params=PageParams(viewport={"width": 840, "height": 10}, device_scale_factor=2),
-                    screenshot_params=ScreenshotParams(type="jpeg", path="test.jpg", quality=80, scale="device"),
+            with open("src/test/test.md", encoding="utf8") as fp:
+                renderer = HTMLRenderer(
+                    page_option=PageOption(viewport={"width": 840, "height": 1000}, device_scale_factor=2),
+                    screenshot_option=ScreenshotOption(type="jpeg", quality=80, scale="device"),
+                )
+                await renderer.render(
+                    MarkdownConverter(
+                        extra_plugins=[
+                            TIP,
+                            WARNING,
+                            DANGER,
+                            Container(ContainerColor("#1166ff", "#0033ee", "rgba(16, 25, 180, .05)"), "blue"),
+                        ]
+                    ).convert(fp.read()),
+                    extra_screenshot_option=ScreenshotOption(path="md.jpg"),
+                )
+                await renderer.render(
+                    convert_text("Testing message!"), extra_screenshot_option=ScreenshotOption(path="text.jpg")
                 )
 
 
