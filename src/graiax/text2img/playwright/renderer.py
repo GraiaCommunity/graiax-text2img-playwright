@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib.resources
 from enum import Enum
 from pathlib import Path
-from typing import Awaitable, Callable, Literal, Sequence
+from typing import Awaitable, Callable, List, Literal, Optional, Sequence, Union
 
 from graiax.playwright import PlaywrightBrowser
 from graiax.playwright.interface import Parameters as PageOption
@@ -21,41 +21,74 @@ class FloatRect(TypedDict):
 
 
 class ScreenshotOption(TypedDict, total=False):
-    timeout: float | None
+    """Playwright 截图参数
+
+    详见：https://playwright.dev/python/docs/api/class-page#page-screenshot
+
+    Args:
+        timeout (float, optional): 截图超时时间.
+        type (Literal["jpeg", "png"], optional): 截图图片类型.
+        path (Union[str, Path]], optional): 截图保存路径，如不需要则留空.
+        quality (int, optional): 截图质量，仅适用于 JPEG 格式图片.
+        omit_background (bool, optional): 是否允许隐藏默认的白色背景，这样就可以截透明图了，仅适用于 PNG 格式.
+        full_page (bool, optional): 是否截整个页面而不是仅设置的视口大小，默认为 True.
+        clip (FloatRect, optional): 截图后裁切的区域，xy为起点.
+        animations: (Literal["allow", "disabled"], optional): 是否允许播放 CSS 动画.
+        caret: (Literal["hide", "initial"], optional): 当设置为 `hide` 时，截图时将隐藏文本插入符号，默认为 `hide`.
+        scale: (Literal["css", "device"], optional): 页面缩放设置.
+            当设置为 `css` 时，则将设备分辨率与 CSS 中的像素一一对应，在高分屏上会使得截图变小.
+            当设置为 `device` 时，则根据设备的屏幕缩放设置或当前 Playwright 的 Page/Context 中的 device_scale_factor 参数缩放.
+        mask (List["Locator"]], optional): 指定截图时的遮罩的 Locator。元素将被一颜色为 #FF00FF 的框覆盖.
+    """
+
+    timeout: Optional[float]
     type: Literal["jpeg", "png", None]
-    path: str | Path | None
-    quality: int | None
-    omit_background: bool | None
-    full_page: bool | None
-    clip: FloatRect | None
+    path: Optional[Union[str, Path]]
+    quality: Optional[int]
+    omit_background: Optional[bool]
+    full_page: Optional[bool]
+    clip: Optional[FloatRect]
     animations: Literal["allow", "disabled", None]
     caret: Literal["hide", "initial", None]
     scale: Literal["css", "device", None]
-    mask: list["Locator"] | None
+    mask: Optional[List["Locator"]]
 
 
 _CSS_MOD = "graiax.text2img.playwright.css"
 
 
 class BuiltinCSS(Enum):
+    """内置 CSS"""
+
     value: str
 
-    container = importlib.resources.read_text(_CSS_MOD, "container.css")
-    one_dark = importlib.resources.read_text(_CSS_MOD, "one-dark.css")
-    github = importlib.resources.read_text(_CSS_MOD, "github.css")
     reset = importlib.resources.read_text(_CSS_MOD, "reset.css")
+    github = importlib.resources.read_text(_CSS_MOD, "github.css")
+    one_dark = importlib.resources.read_text(_CSS_MOD, "one-dark.css")
+    container = importlib.resources.read_text(_CSS_MOD, "container.css")
 
 
 class HTMLRenderer:
+    """_summary_
+
+    Args:
+        page_option (PageOption, optional): 截图时使用的页面设置.
+            参数介绍详见：https://playwright.dev/python/docs/api/class-browser#browser-new-page
+        screenshot_option (ScreenshotOption, optional): 截图设置.
+        css (Sequence[Union[BuiltinCSS, str]], optional): 要加载的 CSS.
+            默认包含 Reset CSS、GitHub Markdown 样式、One Dark 代码高亮主题、VitePress 样式的 container CSS.
+            如有不需要或想覆盖这些默认 CSS，则传入一个包含 CSS 字符串的列表.
+    """
+
     def __init__(
         self,
-        page_option: PageOption | None = None,
-        screenshot_option: ScreenshotOption | None = None,
-        css: Sequence[BuiltinCSS | str] = (
+        page_option: Optional[PageOption] = None,
+        screenshot_option: Optional[ScreenshotOption] = None,
+        css: Sequence[Union[BuiltinCSS, str]] = (
+            BuiltinCSS.reset,
             BuiltinCSS.github,
             BuiltinCSS.one_dark,
             BuiltinCSS.container,
-            BuiltinCSS.reset,
         ),
     ):
         if isinstance(css, str):
@@ -72,10 +105,22 @@ class HTMLRenderer:
         self,
         content: str,
         *,
-        extra_screenshot_option: ScreenshotOption | None = None,
-        extra_page_option: PageOption | None = None,
+        extra_screenshot_option: Optional[ScreenshotOption] = None,
+        extra_page_option: Optional[PageOption] = None,
         page_modifiers: Sequence[Callable[[Page], Awaitable]] = (),
     ) -> bytes:
+        """渲染 HTML 代码为图片
+
+        Args:
+            content (str): 要渲染的 HTML 代码
+            extra_screenshot_option (Optional[ScreenshotOption], optional): 额外的截图设置.
+            extra_page_option (Optional[PageOption], optional): 额外的页面设置.
+            page_modifiers (Sequence[Callable[[Page], Awaitable]], optional): 接受 Page 实例的方法/函数.
+                用于对 Page 本身进行额外的修改，如: 使用 page.route 重定向资源文件到本地文件
+
+        Returns:
+            bytes: 渲染结果图的 bytes 数据
+        """
         browser = Launart.current().get_interface(PlaywrightBrowser)
 
         page_option: PageOption = {**self.page_option, **(extra_page_option or {})}

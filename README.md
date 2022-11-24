@@ -13,7 +13,7 @@
 </div>
 
 GraiaX TextToImage (Playwright) 是一个基于 [GraiaX Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
-其可以将纯文本、Markdown 或 Jinja 2 的模板通过 Playwright 转换为图片。
+其可以将纯文本、Markdown 文本、HTML 代码通过 Playwright 转换为图片。
 
 ## 安装
 
@@ -33,14 +33,14 @@ from graiax.text2img.playwright import HTMLRenderer, convert_md, PageOption, Scr
 md = '''\
 <div align="center">
 
-# Graiax Text2img Playwright
+# GraiaX TextToImage (Playwright)
 
 *基于 Playwright 的适用于 Graia 的文转图工具*
 
 </div>
 
-Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
-其可以将纯文本、Markdown 或 Jinja 2 的模板通过 Playwright 转换为图片。
+GraiaX TextToImage (Playwright) 是一个基于 [GraiaX Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
+其可以将纯文本、Markdown 文本、HTML 代码通过 Playwright 转换为图片。
 
 ## 安装
 
@@ -61,7 +61,7 @@ async def function(app: Ariadne, friend: Friend):
 
 ## 预览
 
-![preview](preview.jpg)
+![预览图]](preview.jpg)
 
 ## 许可证
 

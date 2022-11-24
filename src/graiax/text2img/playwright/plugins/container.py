@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import MutableMapping
+from typing import MutableMapping, Optional, Union, List
 
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
@@ -13,11 +13,20 @@ from ..utils import MdPluginBase
 
 @dataclass
 class ContainerColor:
+    """自定义容器的颜色
+
+    Returns:
+        color (str): 文本颜色
+        border_color (str): 边框颜色
+        background_color (str): 背景颜色
+    """
+
     color: str
     border_color: str
     background_color: str
 
     def to_style(self) -> str:
+        """生成对应的 CSS"""
         return ";".join(
             (
                 f"color:{self.color}",
@@ -28,12 +37,31 @@ class ContainerColor:
 
 
 class Container(MdPluginBase):
-    def __init__(self, style: ContainerColor | str, name: str, title: str | None = None) -> None:
+    """自定义容器
+
+    该容器使用与 VitePress 的 Container 相同的样式
+
+    用法:
+        ```markdown
+        # Container 测试
+
+        :::tip
+        我是 tip
+        :::
+        ```
+
+    Args:
+        style (Union[ContainerColor, str]): 容器的颜色设置或自定义 CSS.
+        name (str): 容器的名字，在 Markdown 文本中使用.
+        title (Optional[str], optional): 容器的默认标题.
+    """
+
+    def __init__(self, style: Union[ContainerColor, str], name: str, title: Optional[str] = None) -> None:
         self.name = name
         self.title = title or name
         self.style = style.to_style() if isinstance(style, ContainerColor) else style
 
-    def render(self, tokens: list[Token], idx: int, options: OptionsDict, env: MutableMapping):
+    def render(self, tokens: List[Token], idx: int, options: OptionsDict, env: MutableMapping):
         token: Token = tokens[idx]
         info = token.info.strip()[len(self.name) :].strip()
 

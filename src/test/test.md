@@ -1,8 +1,8 @@
 <div align="center">
 
-# (WIP) Graiax Text2img Playwright
+# GraiaX TextToImage (Playwright)
 
-*(WIP) 基于 Playwright 的适用于 Graia 的文转图工具*
+*基于 Playwright 的适用于 Graia 的文转图工具*
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
@@ -12,8 +12,8 @@
 
 </div>
 
-Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
-其可以将纯文本、Markdown 或 JinJa2 的模板通过 Playwright 转换为图片。
+GraiaX TextToImage (Playwright) 是一个基于 [GraiaX Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
+其可以将纯文本、Markdown 文本、HTML 代码通过 Playwright 转换为图片。
 
 ## 安装
 
@@ -28,19 +28,19 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 ### 配合 Graia Saya 使用
 
 ```python
-from graiax.text2img_playwright import md2img
+from graiax.text2img.playwright import HTMLRenderer, convert_md, PageOption, ScreenshotOption
 
 md = '''\
 <div align="center">
 
-# (WIP) Graiax Text2img Playwright
+# GraiaX TextToImage (Playwright)
 
-*(WIP) 基于 Playwright 的适用于 Graia 的文转图工具*
+*基于 Playwright 的适用于 Graia 的文转图工具*
 
 </div>
 
-Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
-其可以将纯文本、Markdown 或 JinJa2 的模板通过 Playwright 转换为图片。
+GraiaX TextToImage (Playwright) 是一个基于 [GraiaX Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
+其可以将纯文本、Markdown 文本、HTML 代码通过 Playwright 转换为图片。
 
 ## 安装
 
@@ -51,18 +51,21 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 
 @listen(FriendMessage)
 async def function(app: Ariadne, friend: Friend):
-    image_bytes = await md2img(md, context_args={"viewport": {"width": 840, "height": 10}})
-    await app.sendMessage(friend, MessageChain(Image(data_bytes=image_bytes)))
+    image_bytes = await HTMLRenderer().render(
+        convert_md(md),
+        extra_page_option=PageOption(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
+        extra_screenshot_option=ScreenshotParams(type="jpeg", quality=80, scale="device"),
+    )
+    await app.send_message(friend, MessageChain(Image(data_bytes=image_bytes)))
 ```
 
 ## 预览
 
-`[图片]`
+`[预览图]`
 
 ## 许可证
 
 本项目使用 [`MIT`](./LICENSE) 许可证进行许可。
-
 
 ::::tip
 这是一个 `tip` **测试**
