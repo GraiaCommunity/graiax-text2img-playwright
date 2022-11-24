@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, MutableMapping, Optional, Union
+from typing import List, Optional, Union
 
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
-from markdown_it.utils import OptionsDict
 from mdit_py_plugins.container.index import container_plugin
 
 from ..utils import MdPluginBase
