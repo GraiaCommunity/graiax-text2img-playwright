@@ -40,11 +40,14 @@ def fence(md: RendererHTML, tokens: List[Token], idx: int, options: OptionsDict,
 
         result = f'{result}<div class="highlight-lines">{highlight_lines_code}</div>'
 
-    if use_line_bumbers := not bool(re.search(":no-line-numbers\b", info)):
+    if use_line_numbers := not bool(re.search(":no-line-numbers\b", info)):
         line_numbers_code = "".join(['<div class="line-number"></div>'] * (len(lines) + 1))
         result = f'{result}<div class="line-numbers" aria-hidden="true">{line_numbers_code}</div>'
 
-    result = f'<div class="{language_class} ext-{language["ext"]}{" line-numbers-mode" if use_line_bumbers else ""}">{result}</div>'
+    result = (
+        f'<div class="{language_class} ext-{language["ext"]}'
+        f'{" line-numbers-mode" if use_line_numbers else ""}">{result}</div>'
+    )
 
     return result
 

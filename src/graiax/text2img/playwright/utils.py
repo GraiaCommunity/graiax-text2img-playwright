@@ -1,6 +1,7 @@
+from typing import Any, Callable, Generic, Protocol, runtime_checkable
+
 from markdown_it import MarkdownIt
-from typing import Callable, Any, Generic, Protocol, runtime_checkable
-from typing_extensions import ParamSpec, Concatenate
+from typing_extensions import Concatenate, ParamSpec
 
 P = ParamSpec("P")
 

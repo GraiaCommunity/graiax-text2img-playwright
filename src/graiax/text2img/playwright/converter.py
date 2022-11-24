@@ -1,18 +1,22 @@
 """将指定类型转换为 HTML.
 """
+
 from __future__ import annotations
-from markdown_it import MarkdownIt
+
+from enum import Enum
 from typing import Sequence, overload
-from .utils import MdPlugin, MdPluginBase
-from .plugins.code.highlighter import Highlighter
-from .plugins.code import code_plugin
-from .plugins import container
+
+from markdown_it import MarkdownIt
 from mdit_py_emoji import emoji_plugin
 from mdit_py_plugins.anchors.index import anchors_plugin
 from mdit_py_plugins.footnote.index import footnote_plugin
 from mdit_py_plugins.front_matter.index import front_matter_plugin
 from mdit_py_plugins.tasklists import tasklists_plugin
-from enum import Enum
+
+from .plugins import container
+from .plugins.code import code_plugin
+from .plugins.code.highlighter import Highlighter
+from .utils import MdPlugin, MdPluginBase
 
 
 def convert_text(text: str) -> str:

@@ -1,14 +1,14 @@
 from __future__ import annotations
-from pathlib import Path
-from playwright.async_api import Page
+
 import importlib.resources
-from typing import Awaitable, Callable, Literal, Sequence
 from enum import Enum
-from launart import Launart
+from pathlib import Path
+from typing import Awaitable, Callable, Literal, Sequence
+
 from graiax.playwright import PlaywrightBrowser
 from graiax.playwright.interface import Parameters as PageOption
-
-
+from launart import Launart
+from playwright.async_api import Page
 from playwright.async_api._generated import Locator
 from typing_extensions import TypedDict
 
