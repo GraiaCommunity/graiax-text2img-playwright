@@ -61,7 +61,7 @@ class Container(MdPluginBase):
         self.title = title or name
         self.style = style.to_style() if isinstance(style, ContainerColor) else style
 
-    def render(self, tokens: List[Token], idx: int, options: OptionsDict, env: MutableMapping):
+    def render_impl(self, tokens: List[Token], idx: int):
         token: Token = tokens[idx]
         info = token.info.strip()[len(self.name) :].strip()
 
@@ -77,7 +77,10 @@ class Container(MdPluginBase):
         return bool(marker.startswith(self.name))
 
     def apply(self, md: MarkdownIt):
-        container_plugin(md, self.name, validate=self.validate, render=self.render)
+        def render(_, tokens, idx, *__):
+            return self.render_impl(tokens, idx)
+
+        container_plugin(md, self.name, validate=self.validate, render=render)
 
 
 WARNING = Container(ContainerColor("#ad850e", "rgba(255, 197, 23, .5)", "rgba(255, 197, 23, .05)"), "warning", "注意")
