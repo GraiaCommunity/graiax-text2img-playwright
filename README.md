@@ -1,6 +1,6 @@
 <div align="center">
 
-# Graiax Text2img Playwright
+# GraiaX TextToImage (Playwright)
 
 *基于 Playwright 的适用于 Graia 的文转图工具*
 
@@ -12,8 +12,8 @@
 
 </div>
 
-Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
-其可以将纯文本、Markdown 或 JinJa2 的模板通过 Playwright 转换为图片。
+GraiaX TextToImage (Playwright) 是一个基于 [GraiaX Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
+其可以将纯文本、Markdown 或 Jinja 2 的模板通过 Playwright 转换为图片。
 
 ## 安装
 
@@ -28,8 +28,7 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 ### 配合 Graia Saya 使用
 
 ```python
-from graiax.text2img.playwright.builtin import MarkdownToImg
-from graiax.text2img.playwright.types import NewPageParams, ScreenshotParams
+from graiax.text2img.playwright import HTMLRenderer, convert_md, PageOption, ScreenshotOption
 
 md = '''\
 <div align="center">
@@ -41,7 +40,7 @@ md = '''\
 </div>
 
 Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.com/GraiaCommunity/graiax-playwright) 的文转图工具，
-其可以将纯文本、Markdown 或 JinJa2 的模板通过 Playwright 转换为图片。
+其可以将纯文本、Markdown 或 Jinja 2 的模板通过 Playwright 转换为图片。
 
 ## 安装
 
@@ -50,16 +49,14 @@ Graiax Text2img Playwright 是一个基于 [Graiax Playwright](https://github.co
 > 我们强烈建议使用包管理器或虚拟环境
 '''
 
-md2img = MarkdownToImg()  # 你也可以全局共享该实例
-
 @listen(FriendMessage)
 async def function(app: Ariadne, friend: Friend):
-    image_bytes = await md2img.render(
-        md,
-        context_args=NewPageParams(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
-        screenshot_args=ScreenshotParams(type="jpeg", quality=80, scale="device"),
+    image_bytes = await HTMLRenderer().render(
+        convert_md(md),
+        extra_page_option=PageOption(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
+        extra_screenshot_option=ScreenshotParams(type="jpeg", quality=80, scale="device"),
     )
-    await app.sendMessage(friend, MessageChain(Image(data_bytes=image_bytes)))
+    await app.send_message(friend, MessageChain(Image(data_bytes=image_bytes)))
 ```
 
 ## 预览
