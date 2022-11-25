@@ -54,7 +54,7 @@ async def function(app: Ariadne, friend: Friend):
     image_bytes = await HTMLRenderer().render(
         convert_md(md),
         extra_page_option=PageOption(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
-        extra_screenshot_option=ScreenshotParams(type="jpeg", quality=80, scale="device"),
+        extra_screenshot_option=ScreenshotOption(type="jpeg", quality=80, scale="device"),
     )
     await app.send_message(friend, MessageChain(Image(data_bytes=image_bytes)))
 ```
