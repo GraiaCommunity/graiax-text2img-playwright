@@ -1,7 +1,3 @@
-"""
-移植自 https://github.com/vuepress/vuepress-next/blob/main/packages/markdown/src/plugins/codePlugin/languages.ts
-"""
-
 import re
 
 languages_map = {
