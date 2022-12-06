@@ -144,8 +144,7 @@ class HTMLRenderer:
             for modifier in self.page_modifiers:
                 await modifier(page)
             await page.set_content(
-                '<meta name="viewport" content="width=device-width,initial-scale=1.0">\n'
-                f"<style>{self.style}</style>\n"
-                f"{content}"
+                '<html><head><meta name="viewport" content="width=device-width,initial-scale=1.0">'
+                f"<style>{self.style}</style></head><body>{content}<body>"
             )
             return await page.screenshot(**screenshot_option or {})
