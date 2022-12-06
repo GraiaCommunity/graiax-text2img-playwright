@@ -84,6 +84,11 @@ class HTMLRenderer:
             用于对 Page 本身进行额外的修改，如: 使用 page.route 重定向资源文件到本地文件.
     """
 
+    page_option: PageOption
+    screenshot_option: ScreenshotOption
+    style: str
+    page_modifiers: List[Callable[[Page], Awaitable]]
+
     def __init__(
         self,
         page_option: Optional[PageOption] = None,

@@ -57,6 +57,8 @@ class MarkdownConverter:
         highlighter (Highlighter, optional): 代码高亮器，如需改变代码高亮样式，请传入此参数并更改 `HTMLRenderer` 的 builtin css.
     """
 
+    md: MarkdownIt
+
     @overload
     def __init__(
         self,

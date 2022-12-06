@@ -55,6 +55,10 @@ class Container(MdPluginBase):
         title (Optional[str], optional): 容器的默认标题.
     """
 
+    name: str
+    title: str
+    style: str
+
     def __init__(self, style: Union[ContainerColor, str], name: str, title: Optional[str] = None) -> None:
         self.name = name
         self.title = title or name
