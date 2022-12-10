@@ -178,7 +178,7 @@ class HTMLRenderer:
             await modifier(page)
         await page.set_content(
             '<html><head><meta name="viewport" content="width=device-width,initial-scale=1.0">'
-            f"<style>{self.style}</style></head><body>{content}<body>"
+            f"<style>{self.style}</style></head><body>{content}<body></html>"
         )
         result = await page.screenshot(**screenshot_option)
         await page.close()
