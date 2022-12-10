@@ -3,12 +3,12 @@ from __future__ import annotations
 import importlib.resources
 from enum import Enum
 from pathlib import Path
-from typing import Awaitable, Callable, List, Literal, Optional, Sequence, Union
+from typing import Awaitable, Callable, List, Literal, Optional, Sequence, Union, overload
 
 from graiax.playwright import PlaywrightBrowser
 from graiax.playwright.interface import Parameters as PageOption
 from launart import Launart
-from playwright.async_api import Page
+from playwright.async_api import Page, BrowserContext, Browser
 from playwright.async_api._generated import Locator
 from typing_extensions import TypedDict
 
@@ -113,6 +113,7 @@ class HTMLRenderer:
         self.style: str = "\n".join(i.value if isinstance(i, BuiltinCSS) else i for i in css)
         self.page_modifiers = page_modifiers or []
 
+    @overload
     async def render(
         self,
         content: str,
@@ -120,31 +121,65 @@ class HTMLRenderer:
         extra_screenshot_option: Optional[ScreenshotOption] = None,
         extra_page_option: Optional[PageOption] = None,
         extra_page_modifiers: Optional[List[Callable[[Page], Awaitable]]] = None,
+        browser: Optional[Browser] = None,
+    ) -> bytes:
+        ...
+
+    @overload
+    async def render(
+        self,
+        content: str,
+        *,
+        extra_screenshot_option: Optional[ScreenshotOption] = None,
+        extra_page_modifiers: Optional[List[Callable[[Page], Awaitable]]] = None,
+        context: BrowserContext,
+    ) -> bytes:
+        ...
+
+    async def render(
+        self,
+        content: str,
+        *,
+        extra_screenshot_option: Optional[ScreenshotOption] = None,
+        extra_page_option: Optional[PageOption] = None,
+        extra_page_modifiers: Optional[List[Callable[[Page], Awaitable]]] = None,
+        browser: Optional[Browser] = None,
+        context: Optional[BrowserContext] = None,
     ) -> bytes:
         """渲染 HTML 代码为图片
 
         Args:
             content (str): 要渲染的 HTML 代码
-            extra_screenshot_option (Optional[ScreenshotOption], optional): 额外的截图设置.
+            extra_screenshot_option (Optional[ScreenshotOption], optional): 额外的截图选项.
             extra_page_option (Optional[PageOption], optional): 额外的页面设置.
-            extra_page_modifiers (List[Callable[[Page], Awaitable]], optional): 接受 Page 实例的方法/函数.
-                用于对 Page 本身进行额外的修改，如: 使用 page.route 重定向资源文件到本地文件.
+            extra_page_modifiers (List[Callable[[Page], Awaitable]], optional): 接受 `Page` 实例的方法/函数.
+                用于对 Page 本身进行额外的修改，如: 使用 `page.route` 重定向资源文件到本地文件.
                 仅本次截图使用.
+            browser (Optional[Browser], optional): Playwright 异步浏览器实例，
+                如果 `context` 和 `browser` 都不传入则会通过 `Launart` 获取.
+            context (Optional[BrowserContext], optional): Playwright 浏览器上下文实例，
+                和 `browser` 参数互斥，并且不能和 `extra_page_option` 一起传入.
 
         Returns:
             bytes: 渲染结果图的 bytes 数据
         """
-        browser = Launart.current().get_interface(PlaywrightBrowser)
-
-        page_option: PageOption = {**self.page_option, **(extra_page_option or {})}
         screenshot_option: ScreenshotOption = {**self.screenshot_option, **(extra_screenshot_option or {})}
-        self.page_modifiers.extend(extra_page_modifiers or [])
+        page_modifiers: List[Callable[[Page], Awaitable]] = self.page_modifiers + (extra_page_modifiers or [])
 
-        async with browser.page(**page_option or {}) as page:
-            for modifier in self.page_modifiers:
-                await modifier(page)
-            await page.set_content(
-                '<html><head><meta name="viewport" content="width=device-width,initial-scale=1.0">'
-                f"<style>{self.style}</style></head><body>{content}<body>"
-            )
-            return await page.screenshot(**screenshot_option or {})
+        if context is None:
+            browser = browser or Launart.current().get_interface(PlaywrightBrowser)
+            page_option: PageOption = {**self.page_option, **(extra_page_option or {})}
+            page = await browser.new_page(**page_option)
+        elif extra_page_option is not None:
+            raise ValueError("`extra_page_option` conflicts with `context` argument.")
+        else:
+            page = await context.new_page()
+        for modifier in page_modifiers:
+            await modifier(page)
+        await page.set_content(
+            '<html><head><meta name="viewport" content="width=device-width,initial-scale=1.0">'
+            f"<style>{self.style}</style></head><body>{content}<body>"
+        )
+        result = await page.screenshot(**screenshot_option)
+        await page.close()
+        return result
