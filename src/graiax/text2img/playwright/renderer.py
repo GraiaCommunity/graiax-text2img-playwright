@@ -3,12 +3,21 @@ from __future__ import annotations
 import importlib.resources
 from enum import Enum
 from pathlib import Path
-from typing import Awaitable, Callable, List, Literal, Optional, Sequence, Union, overload
+from typing import (
+    Awaitable,
+    Callable,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Union,
+    overload,
+)
 
-from graiax.playwright import PlaywrightBrowser
+from graiax.playwright import PlaywrightBrowser, PlaywrightContext
 from graiax.playwright.interface import Parameters as PageOption
 from launart import Launart
-from playwright.async_api import Page, BrowserContext, Browser
+from playwright.async_api import Browser, BrowserContext, Page
 from playwright.async_api._generated import Locator
 from typing_extensions import TypedDict
 
@@ -156,9 +165,12 @@ class HTMLRenderer:
                 用于对 Page 本身进行额外的修改，如: 使用 `page.route` 重定向资源文件到本地文件.
                 仅本次截图使用.
             browser (Optional[Browser], optional): Playwright 异步浏览器实例，
-                如果 `context` 和 `browser` 都不传入则会通过 `Launart` 获取.
+                如果 `context` 和 `browser` 都不传入则会通过 `Launart` 自动获取.
+                当使用持久上下文（Persistence Context）模式启动 Playwright 时，
+                不支持 `page_option` 和 `extra_page_option`.
             context (Optional[BrowserContext], optional): Playwright 浏览器上下文实例，
-                和 `browser` 参数互斥，并且不能和 `extra_page_option` 一起传入.
+                如果 `context` 和 `browser` 都不传入则会通过 `Launart` 自动获取.
+                与 `browser` 参数互斥，且不支持 `page_option` 和 `extra_page_option`.
 
         Returns:
             bytes: 渲染结果图的 bytes 数据
@@ -166,16 +178,32 @@ class HTMLRenderer:
         screenshot_option: ScreenshotOption = {**self.screenshot_option, **(extra_screenshot_option or {})}
         page_modifiers: List[Callable[[Page], Awaitable]] = self.page_modifiers + (extra_page_modifiers or [])
 
-        if context is None:
-            browser = browser or Launart.current().get_interface(PlaywrightBrowser)
+        launart = Launart.current()
+        page_option: PageOption = {**self.page_option, **(extra_page_option or {})}
+
+        if browser is None:
+            if context is None:
+                context = launart.get_interface(PlaywrightContext)
+                if context.browser is None:
+                    if page_option:
+                        raise ValueError("`page_option` and `extra_page_option` conflicts with persistence context.")
+                    page = await context.new_page()  # Persistence Context
+                else:
+                    page = await context.browser.new_page(**page_option)  # Non Persistence Context
+            elif page_option:
+                raise ValueError("`page_option` and `extra_page_option` conflicts with BrowserContext.")
+            else:
+                page = await context.new_page()  # Browser Context
+        elif context is None:
+            browser = browser or launart.get_interface(PlaywrightBrowser)
             page_option: PageOption = {**self.page_option, **(extra_page_option or {})}
             page = await browser.new_page(**page_option)
-        elif extra_page_option is not None:
-            raise ValueError("`extra_page_option` conflicts with `context` argument.")
         else:
-            page = await context.new_page()
+            raise ValueError("Argument `browser` and `context` conflict with each other.")
+
         for modifier in page_modifiers:
             await modifier(page)
+
         await page.set_content(
             '<html><head><meta name="viewport" content="width=device-width,initial-scale=1.0">'
             f"<style>{self.style}</style></head><body>{content}<body></html>"

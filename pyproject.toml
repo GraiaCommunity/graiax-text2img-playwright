@@ -7,15 +7,15 @@ authors = [
     {name = "BlueGlassBlock", email = "blueglassblock@outlook.com"}
 ]
 dependencies = [
-    "graiax-playwright>=0.2.1,<0.3.0",
-    "launart>=0.6.1,<0.7.0",
-    "markdown-it-py[linkify,plugins]>=2.1.0",
+    "graiax-playwright>=0.2.3,<0.3.0",
+    "launart>=0.6.3,<0.7.0",
+    "markdown-it-py[linkify,plugins]>=2.2.0",
     "pygments>=2.13.0",
     "typing-extensions>=4.4.0",
     "mdit-py-emoji>=0.1.0",
 ]
 keywords = ["graia", "graiax", "text2img", "playwright"]
-requires-python = ">=3.8"
+requires-python = ">=3.8.1"
 readme = "README.md"
 license = {text = "MIT"}
 
@@ -33,7 +33,7 @@ build-backend = "pdm.pep517.api"
 [tool.pdm.dev-dependencies]
 dev = [
     "flake8>=5.0.4",
-    "black>=22.10.0",
+    "black>=23.1.0",
     "isort>=5.10.1",
 ]
 
