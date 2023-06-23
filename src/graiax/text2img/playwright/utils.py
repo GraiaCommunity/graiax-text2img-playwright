@@ -1,3 +1,4 @@
+from inspect import isawaitable
 from typing import Any, Callable, Generic, Protocol, runtime_checkable
 
 from markdown_it import MarkdownIt
@@ -43,3 +44,25 @@ class MdPlugin(Generic[P]):
             md (MarkdownIt): MarkdownIt 实例
         """
         self.func(md, *self.args, **self.kwargs)
+
+
+async def run_always_await(callable, *args, **kwargs):
+    """Run a callable or awaitable function
+
+    - source: https://github.com/GraiaProject/BroadcastControl/blob/19ca73543bc6d8453a5b3233e814b41107e35423/src/graia/broadcast/utilles.py#L31
+    - license: MIT
+
+    Args:
+        callable (Callable[[Any], Union[Awaitable[Any], Any]):'
+            Function that need to be run.
+        *args:
+            Variable length argument list.
+        **kwargs:
+            Arbitrary keyword arguments.
+    Returns:
+        Return value of the function being run.
+    """
+    obj = callable(*args, **kwargs)
+    while isawaitable(obj):
+        obj = await obj
+    return obj
