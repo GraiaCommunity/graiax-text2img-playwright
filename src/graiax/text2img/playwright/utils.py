@@ -53,7 +53,7 @@ async def run_always_await(callable, *args, **kwargs):
     - license: MIT
 
     Args:
-        callable (Callable[[Any], Union[Awaitable[Any], Any]):'
+        callable (Callable[[Any], Union[Awaitable[Any], Any]):
             Function that need to be run.
         *args:
             Variable length argument list.
