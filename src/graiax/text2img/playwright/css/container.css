@@ -6,14 +6,14 @@
   line-height: 24px;
   font-size: 14px;
   overflow-wrap: break-word;
-  color: rgba(60, 60, 60, .7);
+  color: rgba(60, 60, 60, 0.7);
 }
-.container-block p:first-child{
-    margin: 0;
+.container-block p:first-child {
+  margin: 0;
 }
 .container-block p {
-    margin: 8px 0;
+  margin: 8px 0;
 }
 .container-block-title {
-    font-weight: 700;
+  font-weight: 700;
 }

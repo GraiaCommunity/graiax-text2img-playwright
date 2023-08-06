@@ -1,47 +1,114 @@
 .hll {
   background-color: #ffffcc;
 }
-.o,.ow,.fm {
+.o,
+.ow,
+.fm {
   color: #56b6c2;
 }
 .fm {
   font-weight: bold;
 }
-.c,.ch,.cm,.cp,.cpf,.c1,.cs {
+.c,
+.ch,
+.cm,
+.cp,
+.cpf,
+.c1,
+.cs {
   color: #7f848e;
 }
-.kc,.bp,.kt,.nb,.nc {
+.kc,
+.bp,
+.kt,
+.nb,
+.nc {
   color: #e5c07b;
 }
-.k,.kd,.kn,.kp,.kr {
+.k,
+.kd,
+.kn,
+.kp,
+.kr {
   color: #c678dd;
 }
-.nd,.nf {
+.nd,
+.nf {
   color: #61afef;
 }
 .nf {
   font-weight: bold;
 }
-.n,.na,.no,.ni,.ne,.nl,.nn,.nx,.py,.nt,.nv {
+.n,
+.na,
+.no,
+.ni,
+.ne,
+.nl,
+.nn,
+.nx,
+.py,
+.nt,
+.nv {
   color: #e06c75;
 }
-.m,.mb,.mf,.mh,.mi,.mo,.il {
+.m,
+.mb,
+.mf,
+.mh,
+.mi,
+.mo,
+.il {
   color: #d19a66;
 }
-.s,.sa,.sb,.sc,.dl,.sd,.s2,.se,.sh,.si,.sx,.sr,.s1,.ss {
+.s,
+.sa,
+.sb,
+.sc,
+.dl,
+.sd,
+.s2,
+.se,
+.sh,
+.si,
+.sx,
+.sr,
+.s1,
+.ss {
   color: #98c379;
 }
-.vc,.vg,.vi,.vm {
+.vc,
+.vg,
+.vi,
+.vm {
   color: #e06c75;
 }
-.err,.esc,.g,.l,.x,.p,.gd,.ge,.gr,.gh,.gi,.go,.gp,.gs,.gu,.gt,.ld,.pm,.w {
+.err,
+.esc,
+.g,
+.l,
+.x,
+.p,
+.gd,
+.ge,
+.gr,
+.gh,
+.gi,
+.go,
+.gp,
+.gs,
+.gu,
+.gt,
+.ld,
+.pm,
+.w {
   color: #abb2bf;
 }
 :root {
   --code-bg-color: #292d3e;
-  --code-ln-color: rgba(235, 235, 235, .38);
+  --code-ln-color: rgba(235, 235, 235, 0.38);
   --code-hl-bg-color: rgba(0, 0, 0, 0.66);
-  --line-numbers-color: rgba(84, 84, 84, .48);
+  --line-numbers-color: rgba(84, 84, 84, 0.48);
   --code-ln-wrapper-width: 2.5rem;
   --font-family-code: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace, sans-serif;
 }
