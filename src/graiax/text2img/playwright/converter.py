@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional, Sequence, overload
+from typing import Sequence, overload
 
 from markdown_it import MarkdownIt
 from mdit_py_emoji import emoji_plugin
@@ -82,7 +82,7 @@ class MarkdownConverter:
 
     def __init__(
         self,
-        md: Optional[MarkdownIt] = None,
+        md: MarkdownIt | None = None,
         *,
         default_plugins: Sequence[DefaultPlugin] = (
             DefaultPlugin.emoji,

@@ -3,16 +3,7 @@ from __future__ import annotations
 import importlib.resources
 from enum import Enum
 from pathlib import Path
-from typing import (
-    Awaitable,
-    Callable,
-    List,
-    Literal,
-    Optional,
-    Sequence,
-    Union,
-    overload,
-)
+from typing import Awaitable, Callable, Literal, Sequence, overload
 
 from graiax.playwright import PlaywrightBrowser, PlaywrightContext
 from graiax.playwright.interface import Parameters as PageOption
@@ -52,17 +43,17 @@ class ScreenshotOption(TypedDict, total=False):
         mask (List["Locator"]], optional): 指定截图时的遮罩的 Locator。元素将被一颜色为 #FF00FF 的框覆盖.
     """
 
-    timeout: Optional[float]
+    timeout: float | None
     type: Literal["jpeg", "png", None]
-    path: Optional[Union[str, Path]]
-    quality: Optional[int]
-    omit_background: Optional[bool]
-    full_page: Optional[bool]
-    clip: Optional[FloatRect]
+    path: str | Path | None
+    quality: int | None
+    omit_background: bool | None
+    full_page: bool | None
+    clip: FloatRect | None
     animations: Literal["allow", "disabled", None]
     caret: Literal["hide", "initial", None]
     scale: Literal["css", "device", None]
-    mask: Optional[List["Locator"]]
+    mask: list[Locator] | None
 
 
 _CSS_MOD = "graiax.text2img.playwright.css"
@@ -98,20 +89,20 @@ class HTMLRenderer:
     page_option: PageOption
     screenshot_option: ScreenshotOption
     style: str
-    page_modifiers: List[Callable[[Page], Union[Awaitable[None], None]]]
+    page_modifiers: list[Callable[[Page], Awaitable[None] | None]]
 
     def __init__(
         self,
-        page_option: Optional[PageOption] = None,
-        screenshot_option: Optional[ScreenshotOption] = None,
+        page_option: PageOption | None = None,
+        screenshot_option: ScreenshotOption | None = None,
         *,
-        css: Sequence[Union[BuiltinCSS, str]] = (
+        css: Sequence[BuiltinCSS | str] = (
             BuiltinCSS.reset,
             BuiltinCSS.github,
             BuiltinCSS.one_dark,
             BuiltinCSS.container,
         ),
-        page_modifiers: Optional[List[Callable[[Page], Union[Awaitable[None], None]]]] = None,
+        page_modifiers: list[Callable[[Page], Awaitable[None] | None]] | None = None,
     ):
         if isinstance(css, str):
             css = [css]
@@ -129,10 +120,10 @@ class HTMLRenderer:
         self,
         content: str,
         *,
-        extra_screenshot_option: Optional[ScreenshotOption] = None,
-        extra_page_option: Optional[PageOption] = None,
-        extra_page_modifiers: Optional[List[Callable[[Page], Union[Awaitable[None], None]]]] = None,
-        browser: Optional[Browser] = None,
+        extra_screenshot_option: ScreenshotOption | None = None,
+        extra_page_option: PageOption | None = None,
+        extra_page_modifiers: list[Callable[[Page], Awaitable[None] | None]] | None = None,
+        browser: Browser | None = None,
     ) -> bytes:
         ...
 
@@ -141,8 +132,8 @@ class HTMLRenderer:
         self,
         content: str,
         *,
-        extra_screenshot_option: Optional[ScreenshotOption] = None,
-        extra_page_modifiers: Optional[List[Callable[[Page], Union[Awaitable[None], None]]]] = None,
+        extra_screenshot_option: ScreenshotOption | None = None,
+        extra_page_modifiers: list[Callable[[Page], Awaitable[None] | None]] | None = None,
         context: BrowserContext,
     ) -> bytes:
         ...
@@ -151,11 +142,11 @@ class HTMLRenderer:
         self,
         content: str,
         *,
-        extra_screenshot_option: Optional[ScreenshotOption] = None,
-        extra_page_option: Optional[PageOption] = None,
-        extra_page_modifiers: Optional[List[Callable[[Page], Union[Awaitable[None], None]]]] = None,
-        browser: Optional[Browser] = None,
-        context: Optional[BrowserContext] = None,
+        extra_screenshot_option: ScreenshotOption | None = None,
+        extra_page_option: PageOption | None = None,
+        extra_page_modifiers: list[Callable[[Page], Awaitable[None] | None]] | None = None,
+        browser: Browser | None = None,
+        context: BrowserContext | None = None,
     ) -> bytes:
         """渲染 HTML 代码为图片
 
@@ -178,7 +169,7 @@ class HTMLRenderer:
             bytes: 渲染结果图的 bytes 数据
         """
         screenshot_option: ScreenshotOption = {**self.screenshot_option, **(extra_screenshot_option or {})}
-        page_modifiers: List[Callable[[Page], Union[Awaitable[None], None]]] = self.page_modifiers + (
+        page_modifiers: list[Callable[[Page], Awaitable[None] | None]] = self.page_modifiers + (
             extra_page_modifiers or []
         )
 
