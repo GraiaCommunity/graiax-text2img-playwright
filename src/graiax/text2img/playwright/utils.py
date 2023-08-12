@@ -46,7 +46,7 @@ class MdPlugin(Generic[P]):
         self.func(md, *self.args, **self.kwargs)
 
 
-async def run_always_await(callable, *args, **kwargs):
+async def run_always_await(callable, *args, **kwargs) -> Any:
     """Run a callable or awaitable function
 
     - source: https://github.com/GraiaProject/BroadcastControl/blob/19ca73543bc6d8453a5b3233e814b41107e35423/src/graia/broadcast/utilles.py#L31
