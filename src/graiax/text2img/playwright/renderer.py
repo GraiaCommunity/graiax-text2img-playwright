@@ -124,6 +124,7 @@ class HTMLRenderer:
         extra_page_option: PageOption | None = None,
         extra_page_modifiers: list[Callable[[Page], Awaitable[None] | None]] | None = None,
         browser: Browser | None = None,
+        new_context: bool = False,
     ) -> bytes:
         ...
 
@@ -147,6 +148,7 @@ class HTMLRenderer:
         extra_page_modifiers: list[Callable[[Page], Awaitable[None] | None]] | None = None,
         browser: Browser | None = None,
         context: BrowserContext | None = None,
+        new_context: bool = False,
     ) -> bytes:
         """渲染 HTML 代码为图片
 
@@ -176,25 +178,31 @@ class HTMLRenderer:
         launart = Launart.current()
         page_option: PageOption = {**self.page_option, **(extra_page_option or {})}
 
-        if browser is None:
-            if context is None:
-                context = launart.get_interface(PlaywrightContext)
-                if context.browser is None:
-                    if page_option:
-                        raise ValueError("`page_option` and `extra_page_option` conflicts with persistence context.")
-                    page = await context.new_page()  # Persistence Context
-                else:
-                    page = await context.browser.new_page(**page_option)  # Non Persistence Context
-            elif page_option:
-                raise ValueError("`page_option` and `extra_page_option` conflicts with BrowserContext.")
-            else:
-                page = await context.new_page()  # Browser Context
-        elif context is None:
-            browser = browser or launart.get_interface(PlaywrightBrowser)
-            page_option: PageOption = {**self.page_option, **(extra_page_option or {})}
-            page = await browser.new_page(**page_option)
-        else:
+        if (browser is not None) and (context is not None):
             raise ValueError("Argument `browser` and `context` conflict with each other.")
+
+        if context is None:
+            context = launart.get_interface(PlaywrightContext)
+
+        if context.browser is None:
+            raise ValueError("`page_option` and `extra_page_option` conflicts with persistence context.")
+
+        # sourcery skip: merge-else-if-into-elif
+        if browser is None:
+            if page_option or new_context:
+                browser = launart.get_interface(PlaywrightBrowser)
+                page = (
+                    await (await browser.new_context(**page_option)).new_page()
+                    if new_context
+                    else await browser.new_page(**page_option)
+                )
+            else:
+                page = await context.new_page()
+        else:
+            if new_context:
+                page = await (await browser.new_context(**page_option)).new_page()
+            else:
+                page = await browser.new_page(**page_option)
 
         for modifier in page_modifiers:
             await run_always_await(modifier, page)

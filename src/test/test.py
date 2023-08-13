@@ -1,8 +1,7 @@
 import asyncio
+from pathlib import Path
 
 from graiax.playwright import PlaywrightBrowser, PlaywrightService
-from launart import Launart, Launchable
-
 from graiax.text2img.playwright import (
     HTMLRenderer,
     MarkdownConverter,
@@ -17,6 +16,7 @@ from graiax.text2img.playwright.plugins.container import (
     Container,
     ContainerColor,
 )
+from launart import Launart, Launchable
 
 
 class Test(Launchable):
@@ -32,37 +32,33 @@ class Test(Launchable):
 
     async def launch(self, _: Launart):
         async with self.stage("blocking"):
-            # with open("src/README.md", encoding="utf8") as fp:
-            #     await md2img(
-            #         fp.read(),
-            #         page_params={"viewport": {"width": 840, "height": 10}, "device_scale_factor": 1.5},
-            #         screenshot_args={"path": "test.jpg", "quality": 80, "scale": "device"},
-            #     )
-            with open("src/test/test.md", encoding="utf8") as fp:
-                renderer = HTMLRenderer(
-                    page_option=PageOption(viewport={"width": 840, "height": 1000}, device_scale_factor=2),
-                    screenshot_option=ScreenshotOption(type="jpeg", quality=80, scale="device"),
-                )
-                await renderer.render(
-                    MarkdownConverter(
-                        extra_plugins=[
-                            TIP,
-                            WARNING,
-                            DANGER,
-                            Container(ContainerColor("#1166ff", "#0033ee", "rgba(16, 25, 180, .05)"), "blue"),
-                        ]
-                    ).convert(fp.read()),
-                    extra_screenshot_option=ScreenshotOption(path="md.jpg"),
-                )
-                await renderer.render(
-                    convert_text("Testing message!"), extra_screenshot_option=ScreenshotOption(path="text.jpg")
-                )
+            Path('test-result').mkdir(exist_ok=True)
+            text = Path("src/test/test.md").read_text(encoding="utf8")
+            renderer = HTMLRenderer(
+                page_option=PageOption(viewport={"width": 840, "height": 1}, device_scale_factor=2),
+                screenshot_option=ScreenshotOption(type="jpeg", quality=80, scale="device"),
+            )
+            await renderer.render(
+                MarkdownConverter(
+                    extra_plugins=[
+                        TIP,
+                        WARNING,
+                        DANGER,
+                        Container(ContainerColor("#1166ff", "#0033ee", "rgba(16, 25, 180, .05)"), "blue"),
+                    ]
+                ).convert(text),
+                extra_screenshot_option=ScreenshotOption(path="test-result/md.jpg"),
+            )
+            await renderer.render(
+                convert_text("# Test\n\nTesting message!"),
+                extra_screenshot_option=ScreenshotOption(path="test-result/text.jpg"),
+            )
 
 
 loop = asyncio.new_event_loop()
 launart = Launart()
 
-launart.add_service(PlaywrightService("chromium"))
+launart.add_service(PlaywrightService("chromium", viewport={"width": 340, "height": 1}))
 launart.add_launchable(Test())
 
 launart.launch_blocking()

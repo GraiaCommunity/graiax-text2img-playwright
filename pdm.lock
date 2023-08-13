@@ -6,7 +6,7 @@ groups = ["default", "dev"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:7b8752c032ef65c787c73b7ced0f9f66028c17f31ce309c2133dcf1621cfdba6"
+content_hash = "sha256:128ab2ebb4867ccfbd9a75bc6a022052b63de23f9695922b5ee1531f30d6579b"
 
 [[package]]
 name = "black"
@@ -100,18 +100,18 @@ files = [
 
 [[package]]
 name = "graiax-playwright"
-version = "0.2.4"
+version = "0.2.6"
 requires_python = ">=3.8.1"
 summary = "适用于 Graia 的 Playwright 管理器"
 dependencies = [
-    "launart<0.7.0,>=0.6.3",
-    "loguru<1.0.0,>=0.6.0",
-    "playwright<2.0.0,>=1.27.1",
-    "typing-extensions",
+    "launart<0.7.0,>=0.6.4",
+    "loguru<1.0.0,>=0.7.0",
+    "playwright<2.0.0,>=1.36.0",
+    "typing-extensions<5.0.0,>=4.7.1",
 ]
 files = [
-    {file = "graiax-playwright-0.2.4.tar.gz", hash = "sha256:bb7fc69a0e6daecd3c70e9a3dd909c61ae97d8eb4eed9920679881a6dfe21f17"},
-    {file = "graiax_playwright-0.2.4-py3-none-any.whl", hash = "sha256:8a2f5620a8f518451ae6d860199aeb8a30e67bf128c09cfc9b4f29119ae45cc7"},
+    {file = "graiax_playwright-0.2.6-py3-none-any.whl", hash = "sha256:0a2ac7675274061a74ccf4cf5cc40eb266cb1af96eaf7d210968b1476310db88"},
+    {file = "graiax_playwright-0.2.6.tar.gz", hash = "sha256:bcc17de45600ab10dbab72be6094b287200c28414b576784462399e29cac6772"},
 ]
 
 [[package]]
@@ -388,12 +388,12 @@ files = [
 
 [[package]]
 name = "pygments"
-version = "2.15.1"
+version = "2.16.1"
 requires_python = ">=3.7"
 summary = "Pygments is a syntax highlighting package written in Python."
 files = [
-    {file = "Pygments-2.15.1-py3-none-any.whl", hash = "sha256:db2db3deb4b4179f399a09054b023b6a586b76499d36965813c71aa8ed7b5fd1"},
-    {file = "Pygments-2.15.1.tar.gz", hash = "sha256:8ace4d3c1dd481894b2005f560ead0f9f19ee64fe983366be1a21e171d12775c"},
+    {file = "Pygments-2.16.1-py3-none-any.whl", hash = "sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692"},
+    {file = "Pygments-2.16.1.tar.gz", hash = "sha256:1daff0494820c69bc8941e407aa20f577374ee88364ee10a98fdbe0aece96e29"},
 ]
 
 [[package]]
