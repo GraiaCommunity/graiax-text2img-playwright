@@ -3,6 +3,12 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Make Release
+        required: true
+        type: boolean
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -13,10 +19,12 @@ jobs:
         uses: pdm-project/setup-pdm@main
 
       - name: Build Package
-        run: pdm build
+        run: |
+          pdm build
 
       - name: Publish to PyPI
+        if: ${{ github.event_name == 'push' }} || ${{ github.event.inputs.release == 'true' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_TOKEN }}
-          skip_existing: true
+          skip-existing: true
