@@ -2,6 +2,8 @@ import asyncio
 from pathlib import Path
 
 from graiax.playwright import PlaywrightBrowser, PlaywrightService
+from launart import Launart, Launchable
+
 from graiax.text2img.playwright import (
     HTMLRenderer,
     MarkdownConverter,
@@ -16,7 +18,6 @@ from graiax.text2img.playwright.plugins.container import (
     Container,
     ContainerColor,
 )
-from launart import Launart, Launchable
 
 
 class Test(Launchable):
@@ -32,7 +33,7 @@ class Test(Launchable):
 
     async def launch(self, _: Launart):
         async with self.stage("blocking"):
-            Path('test-result').mkdir(exist_ok=True)
+            Path("test-result").mkdir(exist_ok=True)
             text = Path("src/test/test.md").read_text(encoding="utf8")
             renderer = HTMLRenderer(
                 page_option=PageOption(viewport={"width": 840, "height": 1}, device_scale_factor=2),
