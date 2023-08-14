@@ -2,7 +2,7 @@ import asyncio
 from pathlib import Path
 
 from graiax.playwright import PlaywrightBrowser, PlaywrightService
-from launart import Launart, Launchable
+from launart import Launart, Service
 
 from graiax.text2img.playwright import (
     HTMLRenderer,
@@ -20,7 +20,7 @@ from graiax.text2img.playwright.plugins.container import (
 )
 
 
-class Test(Launchable):
+class Test(Service):
     id = "test"
 
     @property
@@ -59,8 +59,8 @@ class Test(Launchable):
 loop = asyncio.new_event_loop()
 launart = Launart()
 
-launart.add_service(PlaywrightService("chromium", viewport={"width": 340, "height": 1}))
-launart.add_launchable(Test())
+launart.add_component(PlaywrightService("chromium", viewport={"width": 340, "height": 1}))
+launart.add_component(Test())
 
 launart.launch_blocking()
 

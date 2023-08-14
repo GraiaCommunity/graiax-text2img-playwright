@@ -1,28 +1,27 @@
 [project]
 name = "graiax-text2img-playwright"
-version = "0.4.1"
+version = "0.4.2"
 description = "基于 Playwright 的适用于 Graia 的文转图工具"
 authors = [
     {name = "Redlnn", email = "w731347477@gmail.com"},
     {name = "BlueGlassBlock", email = "blueglassblock@outlook.com"}
 ]
 dependencies = [
-    "graiax-playwright>=0.2.6,<0.3.0",
-    "launart>=0.6.4,<0.7.0",
+    "graiax-playwright>=0.2.6",
+    "launart>=0.6.4",
     "markdown-it-py[linkify,plugins]>=3.0.0",
     "pygments>=2.16.1",
-    "typing-extensions>=4.7.1,>0.5.0",
+    "typing-extensions>=4.7.1,<5.0.0",
     "mdit-py-emoji>=0.1.1",
 ]
 keywords = ["graia", "graiax", "text2img", "playwright"]
-requires-python = ">=3.8.1"
+requires-python = ">=3.9"
 readme = "README.md"
 license = {text = "MIT"}
 classifiers = [
     "Typing :: Typed",
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -42,6 +41,7 @@ dev = [
     "flake8>=6.1.0",
     "black>=23.7.0",
     "isort>=5.12.0",
+    "launart>=0.8.1",
 ]
 
 [tool.pdm.build]
@@ -50,20 +50,20 @@ includes = ["src/graiax"]
 
 [tool.black]
 line-length = 120
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ["py39", "py39", "py310", "py311"]
 
 [tool.isort]
 profile = "black"
 
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+target-version = "py39"
 select = [
     # https://beta.ruff.rs/docs/rules
     "E",  # pycodestyle
     "F",  # pyflakes
     "UP", # pyupgrade
-    "I",  # isort
+    # "I",  # isort
     # "D",  # pydocstyle
     "ASYNC", # flake8-async
 ]
