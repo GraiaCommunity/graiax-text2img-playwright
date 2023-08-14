@@ -28,6 +28,7 @@ GraiaX TextToImage (Playwright) 是一个基于 [GraiaX Playwright](https://gith
 ### 配合 Graia Saya 使用
 
 ```python
+from graiax.shortcut.saya import listen
 from graiax.text2img.playwright import HTMLRenderer, convert_md, PageOption, ScreenshotOption
 
 md = '''\
