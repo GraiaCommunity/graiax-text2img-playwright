@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 
-from graiax.playwright import PlaywrightBrowser, PlaywrightService
+from graiax.playwright import PlaywrightService
 from launart import Launart, Service
 
 from graiax.text2img.playwright import (
@@ -25,7 +25,7 @@ class Test(Service):
 
     @property
     def required(self):
-        return {PlaywrightBrowser}
+        return {'web.render/graiax.playwright'}
 
     @property
     def stages(self):

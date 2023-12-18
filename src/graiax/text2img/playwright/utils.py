@@ -1,8 +1,9 @@
+from collections.abc import Callable
 from inspect import isawaitable
-from typing import Any, Callable, Generic, Protocol, runtime_checkable
+from typing import Any, Concatenate, Generic, Protocol, runtime_checkable
 
 from markdown_it import MarkdownIt
-from typing_extensions import Concatenate, ParamSpec
+from typing_extensions import ParamSpec
 
 P = ParamSpec("P")
 
@@ -29,7 +30,8 @@ class MdPlugin(Generic[P]):
     定义一个可被 GraiaX TextToImage (Playwright) 识别并加载的 MdPlugin
 
     Args:
-        plugin (Callable[Concatenate[MarkdownIt, P], Any]): 可将 MarkdownIt 插件应用到 MarkdownIt 实例的函数/方法或 MarkdownIt 插件本身
+        plugin (Callable[Concatenate[MarkdownIt, P], Any]): 可将 MarkdownIt 插件应用到
+            MarkdownIt 实例的函数/方法或 MarkdownIt 插件本身
     """
 
     def __init__(self, plugin: Callable[Concatenate[MarkdownIt, P], Any], *args: P.args, **kwargs: P.kwargs) -> None:
