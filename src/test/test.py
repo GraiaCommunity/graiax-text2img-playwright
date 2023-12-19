@@ -25,7 +25,7 @@ class Test(Service):
 
     @property
     def required(self):
-        return {'web.render/graiax.playwright'}
+        return {"web.render/graiax.playwright"}
 
     @property
     def stages(self):

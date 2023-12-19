@@ -170,12 +170,6 @@ class HTMLRenderer:
 
         Args:
             content (str): 要渲染的 HTML 代码
-            extra_screenshot_option (Optional[ScreenshotOption], optional): 额外的截图选项.
-            extra_page_option (Optional[PageOption], optional): 额外的页面设置.
-            extra_page_modifiers (List[Callable[[Page], Union[Awaitable[None], None]]], optional):
-                接受 `Page` 实例的方法/函数.
-                用于对 Page 本身进行额外的修改，如: 使用 `page.route` 重定向资源文件到本地文件.
-                仅本次截图使用.
             browser (Optional[Browser], optional): Playwright 异步浏览器实例，
                 如果 `context` 和 `browser` 都不传入则会通过 `Launart` 自动获取.
                 当使用持久上下文（Persistence Context）模式启动 Playwright 时，
@@ -183,6 +177,17 @@ class HTMLRenderer:
             context (Optional[BrowserContext], optional): Playwright 浏览器上下文实例，
                 如果 `context` 和 `browser` 都不传入则会通过 `Launart` 自动获取.
                 与 `browser` 参数互斥，且不支持 `page_option` 和 `extra_page_option`.
+            extra_screenshot_option (Optional[ScreenshotOption], optional): 额外的截图选项.
+            extra_page_option (Optional[PageOption], optional): 额外的页面设置.
+            extra_page_modifiers (List[Callable[[Page], Union[Awaitable[None], None]]], optional):
+                接受 `Page` 实例的方法/函数.
+                用于对 Page 本身进行额外的修改，如: 使用 `page.route` 重定向资源文件到本地文件.
+                仅本次截图使用.
+            new_content (bool, optional): 是否创建一个新上下文来渲染，可能可以避免一些
+                cookie 之类的问题，默认为否.
+            use_global_context (bool, optional): 是否使用全局的上下文来截图.
+                当你使用持久上下文来启动 Playwright 时，必须使用全局上下文.
+                当你使用了 `page_option` 参数时该参数会被忽略.
 
         Returns:
             bytes: 渲染结果图的 bytes 数据
@@ -240,6 +245,4 @@ class HTMLRenderer:
             '<html><head><meta name="viewport" content="width=device-width,initial-scale=1.0">'
             f"<style>{self.style}</style></head><body>{content}<body></html>"
         )
-        result = await page.screenshot(**screenshot_option)
-        await page.close()
-        return result
+        return await page.screenshot(**screenshot_option)
